@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VPN Web3</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root { --bg: #0d1117; --card: #161b22; --primary: #58a6ff; --text: #e6edf3; --sub: #8b949e; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        .container { padding: 15px; display: none; animation: fade 0.3s; }
+        .active { display: block; }
+        @keyframes fade { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+        
+        .card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; transition: 0.2s; }
+        .btn-blue { background: var(--primary); color: #fff; }
+        .btn-blue:active { transform: scale(0.98); opacity: 0.9; }
+        
+        h2 { margin: 0 0 10px 0; font-size: 20px; }
+        .row { display: flex; justify-content: space-between; align-items: center; }
+        .sub-text { color: var(--sub); font-size: 13px; }
+        
+        /* Bottom Nav */
+        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(22,27,34,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); }
+        .nav-item { text-align: center; color: var(--sub); font-size: 11px; cursor: pointer; }
+        .nav-item.sel { color: var(--primary); }
+        .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+
+        /* Crypto List */
+        .coin { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .up { color: #3fb950; } .down { color: #f85149; }
+    </style>
+</head>
+<body>
+
+    <div id="tab1" class="container active">
+        <div class="card row">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <img id="ava" src="" style="width:50px; border-radius:50%; background:#333;">
+                <div>
+                    <h2 id="uname">User</h2>
+                    <div class="sub-text">ID: <span id="uid">...</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row">
+                <span>Статус подписки</span>
+                <span style="color:#e6edf3; font-weight:bold;">Проверка через бота</span>
+            </div>
+            <button class="btn btn-blue" onclick="send('check_sub')">🔄 Проверить статус / Скачать</button>
+        </div>
+        <div class="card">
+            <h3>Сервер: 🇳🇱 Netherlands</h3>
+            <div class="sub-text">Локация: Amsterdam • Ping: 24ms</div>
+        </div>
+    </div>
+
+    <div id="tab2" class="container">
+        <h2 style="padding-left:5px;">Тарифы</h2>
+        <div class="card">
+            <div class="row"><h3>📅 1 Месяц</h3> <h3>150₽</h3></div>
+            <div class="sub-text">Скорость до 1 Гбит/с</div>
+            <button class="btn btn-blue" onclick="buy('1_month', 150)">Купить (Crypto Bot)</button>
+        </div>
+        <div class="card">
+            <div class="row"><h3>🗓 3 Месяца</h3> <h3>400₽</h3></div>
+            <div class="sub-text">Выгода 15%</div>
+            <button class="btn btn-blue" onclick="buy('3_months', 400)">Купить (Crypto Bot)</button>
+        </div>
+    </div>
+
+    <div id="tab3" class="container">
+        <h2 style="padding-left:5px;">Рынок</h2>
+        <div class="card" id="crypto-box">Загрузка...</div>
+    </div>
+
+    <div id="tab4" class="container">
+        <div class="card" style="background: linear-gradient(45deg, #1f242d, #161b22);">
+            <div class="sub-text">Ваш баланс (5% от рефералов)</div>
+            <h1 id="balance" style="margin: 10px 0;">0.00 $</h1>
+            <button class="btn btn-blue" onclick="send('withdraw')">💸 Вывести средства</button>
+        </div>
+        <div class="card">
+            <h3>Ваша ссылка</h3>
+            <input type="text" id="ref-link" readonly style="width:100%; box-sizing:border-box; background:#0d1117; border:none; color:#fff; padding:10px; border-radius:8px; margin:10px 0;">
+            <button class="btn btn-blue" onclick="copyRef()">Копировать</button>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-item sel" onclick="tab(1, this)"><span class="nav-icon">👤</span>Профиль</div>
+        <div class="nav-item" onclick="tab(2, this)"><span class="nav-icon">🛒</span>Магазин</div>
+        <div class="nav-item" onclick="tab(3, this)"><span class="nav-icon">📈</span>Крипта</div>
+        <div class="nav-item" onclick="tab(4, this)"><span class="nav-icon">🤝</span>Реф</div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        const user = tg.initDataUnsafe.user;
+
+        // Инициализация
+        if(user) {
+            document.getElementById('uname').innerText = user.first_name;
+            document.getElementById('uid').innerText = user.id;
+            if(user.photo_url) document.getElementById('ava').src = user.photo_url;
+            // Генерируем ссылку (замени BOT_USERNAME)
+            document.getElementById('ref-link').value = `https://t.me/YOUR_BOT_NAME?start=${user.id}`;
+        }
+
+        // Переключение вкладок
+        function tab(n, el) {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab'+n).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('sel'));
+            el.classList.add('sel');
+            if(n===3) loadCrypto();
+            if(n===4) send('get_balance'); // Запрос баланса при открытии
+        }
+
+        // Функции
+        function send(action, payload={}) {
+            tg.sendData(JSON.stringify({action, ...payload}));
+        }
+
+        function buy(plan, price) {
+            send('buy', {plan, price});
+            tg.close();
+        }
+
+        function copyRef() {
+            const el = document.getElementById('ref-link');
+            el.select();
+            document.execCommand('copy');
+            tg.showAlert("Ссылка скопирована!");
+        }
+
+        // Загрузка крипты
+        async function loadCrypto() {
+            const box = document.getElementById('crypto-box');
+            try {
+                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,toncoin,tether&vs_currencies=usd&include_24hr_change=true');
+                const data = await res.json();
+                let html = '';
+                const coins = [
+                    {id:'bitcoin', n:'Bitcoin', s:'BTC'}, {id:'ethereum', n:'Ethereum', s:'ETH'},
+                    {id:'toncoin', n:'TON', s:'TON'}, {id:'tether', n:'USDT', s:'USDT'}
+                ];
+                coins.forEach(c => {
+                    const p = data[c.id].usd;
+                    const ch = data[c.id].usd_24h_change.toFixed(2);
+                    const col = ch>=0 ? 'up':'down';
+                    html += `<div class="coin"><div><b>${c.n}</b> <span class="sub-text">${c.s}</span></div><div style="text-align:right"><div>$${p}</div><div class="${col}">${ch}%</div></div></div>`;
+                });
+                box.innerHTML = html;
+            } catch(e) { box.innerHTML = 'Ошибка загрузки'; }
+        }
+    </script>
+</body>
+</html>
