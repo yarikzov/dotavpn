@@ -5,290 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DotaVPN Ultimate</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. CORE VARIABLES & RESET --- */
         :root {
-            --bg-dark: #050505;
-            --bg-gradient: radial-gradient(circle at 50% -20%, #1a1f3c, #000000);
-            
-            /* Glassmorphism Colors */
-            --glass-surface: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.15);
-            
-            /* Brand Colors */
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.5);
-            --accent: #f43f5e;
-            --accent-glow: rgba(244, 63, 94, 0.5);
-            --success: #10b981;
-            
-            /* Typography */
+            --bg-body: #050505;
+            --primary: #3b82f6; /* Blue */
+            --accent: #ef4444;  /* Red */
+            --success: #10b981; /* Green */
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
-            --text-muted: #94a3b8;
+            --text-sec: #9ca3af;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         body {
-            background: var(--bg-dark);
-            background-image: var(--bg-gradient);
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% 0%, #172033 0%, #050505 60%);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            margin: 0; padding: 0;
+            margin: 0; padding: 0; padding-bottom: 100px;
+            -webkit-tap-highlight-color: transparent;
             min-height: 100vh;
-            padding-bottom: 110px; /* Space for Bottom Nav */
-            overflow-x: hidden;
         }
 
-        /* --- 2. ANIMATIONS --- */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 10px var(--primary-glow); } 50% { box-shadow: 0 0 25px var(--primary-glow); } 100% { box-shadow: 0 0 10px var(--primary-glow); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* --- АНИМАЦИИ --- */
+        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
-        /* --- 3. UI COMPONENTS --- */
-        
-        /* Glass Card */
-        .card {
-            background: var(--glass-surface);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 24px;
-            margin: 16px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Card Shine Effect */
-        .card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-            transition: 0.5s; pointer-events: none;
-        }
-        .card:active::before { left: 100%; transition: 0s; }
-
-        h1, h2, h3 { margin: 0; font-weight: 700; }
-        h2 { font-size: 18px; margin-bottom: 8px; }
-        p { margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.4; }
-
-        .row { display: flex; justify-content: space-between; align-items: center; }
-        .col { display: flex; flex-direction: column; }
-
-        /* Buttons */
-        .btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 16px;
-            transition: transform 0.1s, filter 0.2s;
-            position: relative;
-            overflow: hidden;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        
-        .btn:active { transform: scale(0.96); }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        }
-        
-        .btn-accent {
-            background: linear-gradient(135deg, #f43f5e, #e11d48);
-            color: white;
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
-        }
-
-        .btn-glass {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        /* Status Badges */
-        .badge {
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .badge-active { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge-inactive { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
-
-        /* --- 4. NAVIGATION --- */
-        .nav-bar {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 500px;
-            background: rgba(15, 15, 20, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            display: flex; justify-content: space-around;
-            padding: 14px 0;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--text-muted);
-            font-size: 10px; font-weight: 600;
-            opacity: 0.6; transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .nav-item.active { opacity: 1; color: var(--primary); transform: translateY(-3px); }
-        .nav-icon { font-size: 24px; margin-bottom: 4px; }
-
-        /* --- 5. TABS --- */
-        .tab-content { display: none; animation: fadeIn 0.4s ease; padding-bottom: 20px; }
+        /* --- КОМПОНЕНТЫ UI --- */
+        .tab-content { display: none; padding: 16px; animation: slideIn 0.3s ease-out; }
         .tab-content.active { display: block; }
 
-        /* --- 6. CRYPTO LIST --- */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 20px; margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        h2 { margin: 0 0 8px 0; font-size: 18px; font-weight: 700; }
+        p { margin: 0; color: var(--text-sec); font-size: 13px; line-height: 1.4; }
+        .row { display: flex; justify-content: space-between; align-items: center; }
+
+        /* Кнопки */
+        .btn {
+            width: 100%; padding: 16px; border: none; border-radius: 14px;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            margin-top: 15px; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn:active { transform: scale(0.97); opacity: 0.9; }
+        
+        .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); }
+        .btn-green { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); }
+
+        /* Статусы */
+        .status-active { color: var(--success); font-weight: bold; text-shadow: 0 0 10px rgba(16,185,129,0.3); }
+        .status-inactive { color: var(--accent); font-weight: bold; }
+
+        /* Крипто список */
         .crypto-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 15px 0; border-bottom: 1px solid var(--glass-border);
         }
-        .crypto-item:last-child { border-bottom: none; }
-        .crypto-logo { width: 36px; height: 36px; border-radius: 50%; background: #222; margin-right: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px;}
+        .crypto-item:last-child { border: none; }
         .trend-up { color: var(--success); }
         .trend-down { color: var(--accent); }
 
-        /* --- 7. LOADERS --- */
+        /* Навигация */
+        .nav {
+            position: fixed; bottom: 20px; left: 5%; width: 90%;
+            background: rgba(15, 15, 15, 0.9); backdrop-filter: blur(20px);
+            border-radius: 20px; border: 1px solid var(--glass-border);
+            display: flex; justify-content: space-around; padding: 12px 0;
+            z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .nav-item { text-align: center; color: var(--text-sec); font-size: 10px; opacity: 0.6; transition: 0.3s; }
+        .nav-item.active { opacity: 1; color: var(--primary); transform: translateY(-3px); }
+        .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+
+        /* Лоадер */
         #splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.5s;
+            background: #000; z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; transition: opacity 0.5s;
         }
-        .loader-ring {
-            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--primary); border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <div class="loader-ring"></div>
-        <h3 style="margin-top: 20px; letter-spacing: 2px; text-transform: uppercase;">DotaVPN</h3>
-        <p style="margin-top: 5px; font-size: 11px; opacity: 0.5;">Secure Connection</p>
+        <div class="spinner"></div>
+        <h3 style="margin-top:20px; letter-spacing:1px;">DotaVPN</h3>
     </div>
 
     <div id="tab-profile" class="tab-content active">
-        <div class="card" style="display: flex; align-items: center; gap: 16px;">
-            <img id="user-ava" src="" style="width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; background: #222;">
+        <div class="card" style="display:flex; align-items:center; gap:15px;">
+            <img id="u-ava" src="" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--primary); background:#222;">
             <div>
-                <h2 id="user-name">User</h2>
-                <p>ID: <span id="user-id">Loading...</span></p>
+                <h2 id="u-name">User</h2>
+                <p>ID: <span id="u-id">...</span></p>
             </div>
         </div>
 
         <div class="card">
             <div class="row">
-                <h2>Ваша подписка</h2>
-                <div id="sub-badge" class="badge badge-inactive">Неактивна</div>
+                <span>Подписка:</span>
+                <span id="sub-status" class="status-inactive">Неактивна</span>
             </div>
-            <div style="margin-top: 12px;">
-                <p>Действует до:</p>
-                <div id="sub-date" style="font-size: 18px; font-weight: 600; margin-top: 4px; color: white;">--.--.----</div>
+            <div style="margin-top:5px; font-size:12px; color:var(--text-sec);">
+                Истекает: <span id="sub-date" style="color:#fff;">--.--.----</span>
             </div>
-            <button class="btn btn-primary" onclick="send('get_config')">
-                <span>⚡</span> Скачать конфиг (WireGuard)
-            </button>
+            <button class="btn btn-primary" onclick="send('get_config')">📡 Скачать конфиг</button>
         </div>
 
-        <div id="trial-card" class="card" style="border: 1px solid var(--accent);">
+        <div class="card" id="trial-card" style="border-color: var(--primary);">
             <div class="row">
-                <h2 style="color: var(--accent);">🎁 Пробный период</h2>
+                <h2 style="color:var(--primary)">🎁 Пробный период</h2>
             </div>
-            <p>Получите 7 дней премиум доступа бесплатно. Доступно 1 раз.</p>
-            <button id="btn-trial" class="btn btn-accent" onclick="activateTrial()">
-                Активировать (7 дней)
-            </button>
+            <p>7 дней бесплатно. Доступно 1 раз.</p>
+            <button class="btn btn-outline" onclick="activateTrial()">Получить</button>
         </div>
     </div>
 
     <div id="tab-shop" class="tab-content">
-        <h2 style="padding: 0 16px; margin-top: 20px;">Тарифные планы</h2>
+        <h2>Тарифные планы</h2>
         
         <div class="card">
             <div class="row">
                 <div>
                     <h2>1 Месяц</h2>
-                    <p>Стартовый пакет</p>
+                    <p>Старт</p>
                 </div>
-                <div style="font-size: 20px; font-weight: 700;">150 ₽</div>
+                <h2>150₽</h2>
             </div>
-            <ul style="margin: 15px 0; padding-left: 20px; color: var(--text-muted); font-size: 13px;">
-                <li>Безлимитный трафик</li>
-                <li>Скорость до 1 Гбит/с</li>
-                <li>35 Локаций</li>
-            </ul>
-            <button class="btn btn-glass" onclick="buy('1_month', 150)">Оплатить (CryptoBot)</button>
+            <button class="btn btn-outline" onclick="buy('1_month', 150)">Купить</button>
         </div>
 
-        <div class="card" style="background: linear-gradient(145deg, rgba(59,130,246,0.1), rgba(0,0,0,0)); border-color: var(--primary);">
-            <div style="position: absolute; top: 12px; right: 12px; background: var(--primary); font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: bold;">BEST VALUE</div>
+        <div class="card" style="border:1px solid var(--success);">
+            <div style="position:absolute; top:0; right:0; background:var(--success); color:#000; font-size:10px; padding:3px 8px; border-bottom-left-radius:8px;">TOP</div>
             <div class="row">
                 <div>
-                    <h2 style="color: var(--primary);">3 Месяца</h2>
+                    <h2 style="color:var(--success)">3 Месяца</h2>
                     <p>Выгода 15%</p>
                 </div>
-                <div style="font-size: 20px; font-weight: 700; color: var(--primary);">400 ₽</div>
+                <h2 style="color:var(--success)">400₽</h2>
             </div>
-            <button class="btn btn-primary" onclick="buy('3_months', 400)">Оплатить со скидкой</button>
+            <button class="btn btn-green" onclick="buy('3_months', 400)">Купить выгодно</button>
         </div>
     </div>
 
     <div id="tab-crypto" class="tab-content">
-        <div class="row" style="padding: 20px 16px 0;">
-            <h2>Рынок (Binance API)</h2>
-            <div onclick="loadCrypto()" style="font-size: 20px; cursor: pointer;">🔄</div>
+        <div class="row">
+            <h2>Рынок (Live)</h2>
+            <div onclick="loadCrypto()" style="cursor:pointer; font-size:20px;">🔄</div>
         </div>
-        
-        <div class="card" id="crypto-container">
-            <div style="text-align: center; padding: 20px;">Загрузка данных...</div>
-        </div>
+        <div class="card" id="crypto-list">Загрузка...</div>
     </div>
 
-    <div id="tab-refs" class="tab-content">
+    <div id="tab-ref" class="tab-content">
         <div class="card" style="background: linear-gradient(135deg, #1e1b4b, #000);">
-            <p>Ваш баланс</p>
-            <h1 id="balance-display" style="font-size: 36px; margin: 10px 0;">0.00 $</h1>
-            <button class="btn btn-success" style="background: #10b981;" onclick="send('withdraw')">Вывести средства</button>
+            <p>Баланс</p>
+            <h1 id="balance" style="font-size:32px; margin:5px 0;">0.00 $</h1>
+            
+            <div class="row" style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                <span>Приглашено людей:</span>
+                <span id="ref-count" style="font-weight:bold;">0</span>
+            </div>
+
+            <button class="btn btn-green" style="margin-top:15px;" onclick="send('withdraw')">Вывести</button>
         </div>
 
         <div class="card">
-            <h2>Партнерская программа</h2>
-            <p style="margin-bottom: 12px;">Получайте 15% с каждой оплаты приглашенного друга пожизненно.</p>
-            
-            <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 12px; font-family: monospace; word-break: break-all; border: 1px solid var(--glass-border); color: #ccc;" id="ref-link">
-                Loading...
-            </div>
-            <button class="btn btn-glass" onclick="copyRef()">Копировать ссылку</button>
+            <h2>Ваша ссылка</h2>
+            <p>15% с каждой покупки реферала.</p>
+            <input type="text" id="ref-link" readonly style="width:100%; margin-top:10px; background:#111; border:1px solid #333; color:#ccc; padding:10px; border-radius:8px;">
+            <button class="btn btn-outline" onclick="copyRef()">Копировать</button>
         </div>
     </div>
 
-    <div class="nav-bar">
-        <div class="nav-item active" onclick="switchTab('tab-profile', this)"><span class="nav-icon">👤</span>Профиль</div>
-        <div class="nav-item" onclick="switchTab('tab-shop', this)"><span class="nav-icon">🛒</span>VPN</div>
-        <div class="nav-item" onclick="switchTab('tab-crypto', this)"><span class="nav-icon">📈</span>Крипта</div>
-        <div class="nav-item" onclick="switchTab('tab-refs', this)"><span class="nav-icon">💸</span>Реф</div>
+    <div class="nav">
+        <div class="nav-item active" onclick="tab('tab-profile', this)"><span class="nav-icon">👤</span>Профиль</div>
+        <div class="nav-item" onclick="tab('tab-shop', this)"><span class="nav-icon">🛒</span>Магазин</div>
+        <div class="nav-item" onclick="tab('tab-crypto', this)"><span class="nav-icon">📈</span>Крипта</div>
+        <div class="nav-item" onclick="tab('tab-ref', this)"><span class="nav-icon">💸</span>Реф</div>
     </div>
 
     <script>
@@ -296,7 +201,7 @@
         tg.expand();
 
         // 1. Инициализация
-        window.onload = function() {
+        window.onload = () => {
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
                 setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
@@ -304,106 +209,85 @@
 
             const user = tg.initDataUnsafe.user;
             if(user) {
-                document.getElementById('user-name').innerText = user.first_name;
-                document.getElementById('user-id').innerText = user.id;
-                if(user.photo_url) document.getElementById('user-ava').src = user.photo_url;
-                
-                // Формируем ссылку (нужно заменить BOT_USERNAME на реальный в JS тоже, либо получать от бота)
-                // Для простоты генерируем тут:
-                document.getElementById('ref-link').innerText = `https://t.me/MrdotaVPN_bot?start=${user.id}`;
+                document.getElementById('u-name').innerText = user.first_name;
+                document.getElementById('u-id').innerText = user.id;
+                document.getElementById('u-ava').src = user.photo_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                // Генерируем ссылку (замените BOT_NAME на свой)
+                document.getElementById('ref-link').value = `https://t.me/YOUR_BOT_NAME?start=${user.id}`;
             }
-
-            // Запрашиваем актуальные данные о подписке и триале у бота при старте
-            send('get_status'); 
+            
+            // Запрашиваем данные у бота при старте (баланс, кол-во рефов, статус)
+            send('get_data'); 
         };
 
-        // 2. Навигация
-        function switchTab(tabId, el) {
+        // 2. Логика переключения
+        function tab(id, el) {
             tg.HapticFeedback.impactOccurred('light');
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
 
-            if(tabId === 'tab-crypto') loadCrypto();
-            if(tabId === 'tab-refs') send('get_balance');
+            if(id === 'tab-crypto') loadCrypto();
+            if(id === 'tab-ref' || id === 'tab-profile') send('get_data');
         }
 
-        // 3. Отправка данных боту
-        function send(action, data={}) {
-            tg.sendData(JSON.stringify({ action: action, ...data }));
-        }
+        function send(action, data={}) { tg.sendData(JSON.stringify({action, ...data})); }
 
         function buy(plan, price) {
             tg.HapticFeedback.notificationOccurred('success');
-            send('buy', { plan, price });
-            tg.close(); 
+            send('buy', {plan, price});
+            tg.close();
         }
 
         function activateTrial() {
-            tg.showConfirm("Активировать пробный период на 7 дней?", (ok) => {
+            tg.showConfirm("Взять 7 дней бесплатно?", (ok) => {
                 if(ok) send('activate_trial');
             });
         }
 
         function copyRef() {
-            const text = document.getElementById('ref-link').innerText;
-            navigator.clipboard.writeText(text);
+            const el = document.getElementById('ref-link');
+            el.select();
+            document.execCommand('copy');
             tg.showAlert("Ссылка скопирована!");
         }
 
-        // 4. Крипто-Мониторинг (Используем Binance API - он надежнее CoinGecko)
+        // 3. Крипта (CoinCap API - Работает без CORS проблем)
         async function loadCrypto() {
-            const container = document.getElementById('crypto-container');
-            container.innerHTML = '<div style="text-align:center;">Обновление...</div>';
+            const box = document.getElementById('crypto-list');
+            box.innerHTML = '<div style="text-align:center">Обновление...</div>';
             
             try {
-                // Забираем топ пары
-                const symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'TONUSDT', 'BNBUSDT'];
-                let html = '';
+                const res = await fetch('https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,toncoin,tether');
+                const json = await res.json();
+                const data = json.data;
                 
-                for(let sym of symbols) {
-                    const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`);
-                    const data = await res.json();
-                    
-                    const price = parseFloat(data.lastPrice).toFixed(2);
-                    const change = parseFloat(data.priceChangePercent).toFixed(2);
+                let html = '';
+                data.forEach(coin => {
+                    const price = parseFloat(coin.priceUsd).toFixed(2);
+                    const change = parseFloat(coin.changePercent24Hr).toFixed(2);
                     const isUp = change >= 0;
-                    
-                    // Красивое имя
-                    const name = sym.replace('USDT', ''); 
                     
                     html += `
                     <div class="crypto-item">
-                        <div style="display:flex; align-items:center;">
-                            <div class="crypto-logo">${name[0]}</div>
-                            <div>
-                                <div style="font-weight:bold;">${name}</div>
-                                <div style="font-size:11px; color:var(--text-muted);">USDT</div>
-                            </div>
+                        <div>
+                            <div style="font-weight:bold">${coin.name}</div>
+                            <div style="font-size:12px; color:#888">${coin.symbol}</div>
                         </div>
-                        <div style="text-align:right;">
-                            <div style="font-weight:600;">$${price}</div>
-                            <div class="${isUp ? 'trend-up' : 'trend-down'}" style="font-size:12px;">
+                        <div style="text-align:right">
+                            <div style="font-weight:600">$${price}</div>
+                            <div class="${isUp ? 'trend-up' : 'trend-down'}" style="font-size:12px">
                                 ${isUp ? '▲' : '▼'} ${change}%
                             </div>
                         </div>
                     </div>`;
-                }
-                container.innerHTML = html;
-                
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = '<div style="color:var(--accent); text-align:center;">Ошибка API Binance</div>';
+                });
+                box.innerHTML = html;
+            } catch(e) {
+                box.innerHTML = "Ошибка API. Попробуйте позже.";
             }
         }
-        
-        // --- 5. Слушаем события (если бы сайт был не статичным), но в данном случае
-        // мы обновляем интерфейс только по действиям. 
-        // Исключение: Боту нужно передавать состояние Trial.
-        // Так как это статика, мы скрываем кнопку триала при клике (оптимистичный UI)
-        // Реальная проверка будет на сервере.
     </script>
 </body>
 </html>
