@@ -5,95 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DotaVPN Ultimate</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #050505;
-            --primary: #3a74cf; /* Blue */
-            --accent: #ef4444;  /* Red */
-            --success: #10b981; /* Green */
-            --glass-bg: rgba(39, 31, 31, 0.103);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-sec: #9ca3af;
+            --bg-0: #05020f;
+            --bg-1: #0b0f2b;
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-strong: rgba(255, 255, 255, 0.12);
+            --border: rgba(255, 255, 255, 0.12);
+            --text-main: #f5f7ff;
+            --text-sec: #a7b0c8;
+            --neon: #43f5c4;
+            --cyan: #3aa6ff;
+            --magenta: #ff4fd8;
+            --warning: #ff6b6b;
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            background-color: var(--bg-body);
-            background-image: radial-gradient(circle at 50% 0%, #172033 0%, #050505 60%);
+            background: radial-gradient(1000px 400px at 10% -10%, rgba(67, 245, 196, 0.16), transparent 60%),
+                        radial-gradient(800px 400px at 90% 10%, rgba(58, 166, 255, 0.18), transparent 60%),
+                        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            margin: 0; padding: 0; padding-bottom: 100px;
+            font-family: 'Space Grotesk', sans-serif;
+            margin: 0; padding: 0; padding-bottom: 110px;
             -webkit-tap-highlight-color: transparent;
             min-height: 100vh;
         }
 
-        /* --- АНИМАЦИИ --- */
-        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        body::before, body::after {
+            content: "";
+            position: fixed;
+            inset: -20% auto auto -10%;
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(255, 79, 216, 0.25), transparent 70%);
+            filter: blur(30px);
+            z-index: 0;
+            pointer-events: none;
+        }
+        body::after {
+            inset: auto -10% 10% auto;
+            background: radial-gradient(circle, rgba(67, 245, 196, 0.18), transparent 70%);
+        }
 
-        /* --- КОМПОНЕНТЫ UI --- */
-        .tab-content { display: none; padding: 16px; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .tab-content { display: none; padding: 16px; animation: slideIn 0.35s ease-out; position: relative; z-index: 1; }
         .tab-content.active { display: block; }
 
         .card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 20px; margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: var(--glass);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 18px; padding: 18px; margin-bottom: 16px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.35);
+        }
+        .card.glow { border-color: rgba(67, 245, 196, 0.35); box-shadow: 0 0 0 1px rgba(67,245,196,0.2), 0 18px 40px rgba(0,0,0,0.45); }
+
+        h1 { margin: 0 0 6px 0; font-size: 24px; letter-spacing: 0.2px; }
+        h2 { margin: 0 0 8px 0; font-size: 18px; font-weight: 700; }
+        p { margin: 0; color: var(--text-sec); font-size: 13px; line-height: 1.5; }
+        .mono { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2px; }
+        .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+
+        .chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 10px; border-radius: 999px;
+            background: rgba(67, 245, 196, 0.12);
+            color: var(--neon); font-size: 11px; font-weight: 600;
+            border: 1px solid rgba(67, 245, 196, 0.25);
         }
 
-        h2 { margin: 0 0 8px 0; font-size: 18px; font-weight: 700; }
-        p { margin: 0; color: var(--text-sec); font-size: 13px; line-height: 1.4; }
-        .row { display: flex; justify-content: space-between; align-items: center; }
-
-        /* Кнопки */
         .btn {
-            width: 100%; padding: 16px; border: none; border-radius: 14px;
-            font-size: 16px; font-weight: 600; cursor: pointer;
-            margin-top: 15px; transition: 0.2s;
+            width: 100%; padding: 14px; border: none; border-radius: 12px;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            margin-top: 14px; transition: 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .btn:active { transform: scale(0.97); opacity: 0.9; }
-        
-        .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); }
-        .btn-green { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-primary { background: linear-gradient(135deg, #2b5bff, #3aa6ff); color: white; box-shadow: 0 8px 18px rgba(58, 166, 255, 0.35); }
+        .btn-neon { background: linear-gradient(135deg, #1be7b3, #5effc4); color: #051017; box-shadow: 0 8px 18px rgba(27, 231, 179, 0.35); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
 
-        /* Статусы */
-        .status-active { color: var(--success); font-weight: bold; text-shadow: 0 0 10px rgba(16,185,129,0.3); }
-        .status-inactive { color: var(--accent); font-weight: bold; }
+        .status-active { color: var(--neon); font-weight: bold; text-shadow: 0 0 10px rgba(67,245,196,0.3); }
+        .status-inactive { color: var(--warning); font-weight: bold; }
 
-        /* Крипто список */
         .crypto-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 0; border-bottom: 1px solid var(--glass-border);
+            padding: 14px 0; border-bottom: 1px solid var(--border);
         }
         .crypto-item:last-child { border: none; }
-        .trend-up { color: var(--success); }
-        .trend-down { color: var(--accent); }
+        .trend-up { color: var(--neon); }
+        .trend-down { color: var(--warning); }
 
-        /* Навигация */
         .nav {
-            position: fixed; bottom: 20px; left: 5%; width: 90%;
-            background: rgba(15, 15, 15, 0.9); backdrop-filter: blur(20px);
-            border-radius: 20px; border: 1px solid var(--glass-border);
+            position: fixed; bottom: 18px; left: 6%; width: 88%;
+            background: rgba(9, 10, 18, 0.82); backdrop-filter: blur(18px);
+            border-radius: 18px; border: 1px solid var(--border);
             display: flex; justify-content: space-around; padding: 12px 0;
-            z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            z-index: 100; box-shadow: 0 16px 40px rgba(0,0,0,0.55);
         }
-        .nav-item { text-align: center; color: var(--text-sec); font-size: 10px; opacity: 0.6; transition: 0.3s; }
-        .nav-item.active { opacity: 1; color: var(--primary); transform: translateY(-3px); }
-        .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-item { text-align: center; color: var(--text-sec); font-size: 10px; opacity: 0.7; transition: 0.3s; }
+        .nav-item.active { opacity: 1; color: var(--neon); transform: translateY(-3px); }
+        .nav-icon { font-size: 20px; display: block; margin-bottom: 4px; }
 
-        /* Лоадер */
         #splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; flex-direction: column;
+            background: #04040a; z-index: 9999; display: flex; flex-direction: column;
             align-items: center; justify-content: center; transition: opacity 0.5s;
         }
-        .spinner { width: 40px; height: 40px; border: 3px solid var(--primary); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner { width: 42px; height: 42px; border: 3px solid var(--cyan); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
 
     </style>
 </head>
@@ -105,11 +132,21 @@
     </div>
 
     <div id="tab-profile" class="tab-content active">
+        <div class="card glow">
+            <div class="row">
+                <div>
+                    <h1>DotaVPN // Node</h1>
+                    <p class="mono">SECURE ROUTE · v4</p>
+                </div>
+                <span class="chip">ONLINE</span>
+            </div>
+        </div>
+
         <div class="card" style="display:flex; align-items:center; gap:15px;">
-            <img id="u-ava" src="" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--primary); background:#222;">
+            <img id="u-ava" src="" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--cyan); background:#1a1f34;">
             <div>
                 <h2 id="u-name">User</h2>
-                <p>ID: <span id="u-id">...</span></p>
+                <p class="mono">ID: <span id="u-id">...</span></p>
             </div>
         </div>
 
@@ -124,9 +161,10 @@
             <button class="btn btn-primary" onclick="send('get_config')">📡 Скачать конфиг</button>
         </div>
 
-        <div class="card" id="trial-card" style="border-color: var(--primary);">
+        <div class="card" id="trial-card" style="border-color: rgba(58,166,255,0.6);">
             <div class="row">
-                <h2 style="color:var(--primary)">🎁 Пробный период</h2>
+                <h2 style="color:var(--cyan)">🎁 Пробный период</h2>
+                <span class="chip">ONE TIME</span>
             </div>
             <p>7 дней бесплатно. Доступно 1 раз.</p>
             <button class="btn btn-outline" onclick="activateTrial()">Получить</button>
@@ -140,23 +178,34 @@
             <div class="row">
                 <div>
                     <h2>1 Месяц</h2>
-                    <p>Старт</p>
+                    <p>Базовый доступ</p>
                 </div>
-                <h2>150₽</h2>
+                <h2 class="mono">1$</h2>
             </div>
-            <button class="btn btn-outline" onclick="buy('1_month', 150)">Купить</button>
+            <button class="btn btn-outline" onclick="buy('1_month', 1)">Купить</button>
         </div>
 
-        <div class="card" style="border:1px solid var(--success);">
-            <div style="position:absolute; top:0; right:0; background:var(--success); color:#000; font-size:10px; padding:3px 8px; border-bottom-left-radius:8px;">TOP</div>
+        <div class="card glow" style="border:1px solid rgba(67,245,196,0.5);">
+            <div style="position:absolute; top:0; right:0; background:var(--neon); color:#04120f; font-size:10px; padding:3px 8px; border-bottom-left-radius:8px;">TOP</div>
             <div class="row">
                 <div>
-                    <h2 style="color:var(--success)">3 Месяца</h2>
+                    <h2 style="color:var(--neon)">3 Месяца</h2>
                     <p>Выгода 15%</p>
                 </div>
-                <h2 style="color:var(--success)">400₽</h2>
+                <h2 class="mono" style="color:var(--neon)">1$</h2>
             </div>
-            <button class="btn btn-green" onclick="buy('3_months', 400)">Купить выгодно</button>
+            <button class="btn btn-neon" onclick="buy('3_months', 1)">Купить выгодно</button>
+        </div>
+
+        <div class="card">
+            <div class="row">
+                <div>
+                    <h2>6 Месяцев</h2>
+                    <p>Максимум</p>
+                </div>
+                <h2 class="mono">1$</h2>
+            </div>
+            <button class="btn btn-outline" onclick="buy('6_months', 1)">Купить</button>
         </div>
     </div>
 
@@ -169,7 +218,7 @@
     </div>
 
     <div id="tab-ref" class="tab-content">
-        <div class="card" style="background: linear-gradient(135deg, #1e1b4b, #000);">
+        <div class="card glow" style="background: linear-gradient(135deg, rgba(58,166,255,0.18), rgba(5,2,15,0.9));">
             <p>Баланс</p>
             <h1 id="balance" style="font-size:32px; margin:5px 0;">0.00 $</h1>
             
@@ -178,7 +227,7 @@
                 <span id="ref-count" style="font-weight:bold;">0</span>
             </div>
 
-            <button class="btn btn-green" style="margin-top:15px;" onclick="send('withdraw')">Вывести</button>
+            <button class="btn btn-neon" style="margin-top:15px;" onclick="send('withdraw')">Вывести</button>
         </div>
 
         <div class="card">
@@ -186,6 +235,11 @@
             <p>15% с каждой покупки реферала.</p>
             <input type="text" id="ref-link" readonly style="width:100%; margin-top:10px; background:#111; border:1px solid #333; color:#ccc; padding:10px; border-radius:8px;">
             <button class="btn btn-outline" onclick="copyRef()">Копировать</button>
+        </div>
+
+        <div class="card">
+            <h2>Рефералы</h2>
+            <div id="ref-list" style="font-size:13px; color:#bbb;">Загрузка...</div>
         </div>
     </div>
 
@@ -199,6 +253,7 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        const API_BASE_URL = "https://YOUR_DOMAIN_OR_IP/api";
 
         // 1. Инициализация
         window.onload = () => {
@@ -215,9 +270,9 @@
                 // Генерируем ссылку (замените BOT_NAME на свой)
                 document.getElementById('ref-link').value = `https://t.me/MrdotaVPN_bot?start=${user.id}`;
             }
-            
-            // Запрашиваем данные у бота при старте (баланс, кол-во рефов, статус)
-            send('get_data'); 
+
+            syncProfile();
+            setInterval(syncProfile, 20000);
         };
 
         // 2. Логика переключения
@@ -229,7 +284,7 @@
             el.classList.add('active');
 
             if(id === 'tab-crypto') loadCrypto();
-            if(id === 'tab-ref' || id === 'tab-profile') send('get_data');
+            if(id === 'tab-ref' || id === 'tab-profile') syncProfile();
         }
 
         function send(action, data={}) { tg.sendData(JSON.stringify({action, ...data})); }
@@ -251,6 +306,52 @@
             el.select();
             document.execCommand('copy');
             tg.showAlert("Ссылка скопирована!");
+        }
+
+        async function syncProfile() {
+            const user = tg.initDataUnsafe.user;
+            if(!user || !tg.initData) return;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/profile`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ init_data: tg.initData, user_id: user.id })
+                });
+                const json = await res.json();
+                if(!json.ok) return;
+
+                const u = json.user;
+                document.getElementById('balance').innerText = `${u.balance.toFixed(2)} $`;
+                document.getElementById('ref-count').innerText = u.ref_count;
+
+                const statusEl = document.getElementById('sub-status');
+                const dateEl = document.getElementById('sub-date');
+                if(u.sub_active) {
+                    statusEl.classList.remove('status-inactive');
+                    statusEl.classList.add('status-active');
+                    statusEl.innerText = 'Активна';
+                } else {
+                    statusEl.classList.remove('status-active');
+                    statusEl.classList.add('status-inactive');
+                    statusEl.innerText = 'Неактивна';
+                }
+                dateEl.innerText = u.sub_end || '--.--.----';
+
+                const list = document.getElementById('ref-list');
+                if(u.referrals && u.referrals.length > 0) {
+                    list.innerHTML = u.referrals.map(r => {
+                        const name = r.username ? '@' + r.username : `ID ${r.user_id}`;
+                        return `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding:6px 0;">
+                            <span>${name}</span><span style="color:#777;">${r.reg_date || ''}</span>
+                        </div>`;
+                    }).join('');
+                } else {
+                    list.innerHTML = 'Нет рефералов';
+                }
+            } catch (e) {
+                // тихий фейл
+            }
         }
 
         // 3. Крипта (CoinCap API - Работает без CORS проблем)
