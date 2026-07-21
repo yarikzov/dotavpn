@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>DotaVPN</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"/>
+<style>
+/* ═══════════════════════════════════════════════════════════
+   ТЁМНАЯ ТЕМА (по умолчанию)
+═══════════════════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg: #06060b;
+  --bg-glass: rgba(255, 255, 255, 0.045);
+  --bg-glass-hover: rgba(255, 255, 255, 0.08);
+  --glass-brd: rgba(255, 255, 255, 0.09);
+  --glass-brd-active: rgba(255, 45, 90, 0.6);
+  --glass-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.35);
+  --neon-red: rgba(255, 45, 90, 0.45);
+  --neon-gold: rgba(255, 176, 32, 0.32);
+  --bg2:var(--bg-glass); --bg3:var(--bg-glass); --bg4:var(--bg-glass-hover);
+  --brd:var(--glass-brd); --brd2:var(--glass-brd-active);
+  --red:#ff2d5a; --red2:#ff2350; --rdim:rgba(255,45,90,.15); --rglow:rgba(255,45,90,.35);
+  --gold:#ffb020; --gold2:#ffb020; --gdim2:rgba(255,176,32,.15); --gglow2:rgba(255,176,32,.3);
+  --grn:#8dff3d; --gdim:rgba(141,255,61,.15); --gglow:rgba(141,255,61,.3);
+  --amb:#ffb020; --adim:rgba(255,176,32,.15);
+  --tx:#f3f3fb; --tx2:#9a9ab4; --tx3:#66667f;
+  --orb1-c: rgba(255,35,80,.16);
+  --orb2-c: rgba(141,255,61,.07);
+  --orb3-c: rgba(255,176,32,.08);
+  --av-bg: #16161f;
+  --tabbar-bg: rgba(10, 10, 16, 0.82);
+  --input-bg: rgba(255,255,255,0.05);
+  --modal-overlay: rgba(2,2,8,.78);
+  --loading-bg: #06060b;
+  --supcode-bg: rgba(255,255,255,0.05);
+  --tcc-bg: rgba(255,255,255,0.05);
+  --grain-op: 0;
+  --red-dk:#b81640; --grn-dk:#5ea823; --gold-dk:#b97900;
+  --font-display: 'Fredoka', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   СВЕТЛАЯ ТЕМА — та же композиция, светлый фон
+═══════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  --bg: #f3f2f8;
+  --bg-glass: rgba(10, 10, 30, 0.032);
+  --bg-glass-hover: rgba(10, 10, 30, 0.055);
+  --glass-brd: rgba(10, 10, 30, 0.09);
+  --glass-brd-active: rgba(230, 20, 70, 0.45);
+  --glass-shadow: 0 2px 16px 0 rgba(20, 10, 40, 0.07);
+  --neon-red: rgba(230, 20, 70, 0.2);
+  --neon-gold: rgba(230, 140, 0, 0.22);
+  --bg2:var(--bg-glass); --bg3:var(--bg-glass); --bg4:var(--bg-glass-hover);
+  --brd:var(--glass-brd); --brd2:var(--glass-brd-active);
+  --red:#e11450; --red2:#e11450; --rdim:rgba(225,20,80,.1); --rglow:rgba(225,20,80,.22);
+  --gold:#dd8a00; --gold2:#dd8a00; --gdim2:rgba(221,138,0,.1); --gglow2:rgba(221,138,0,.2);
+  --grn:#3fa621; --gdim:rgba(63,166,33,.1); --gglow:rgba(63,166,33,.2);
+  --amb:#dd8a00; --adim:rgba(221,138,0,.1);
+  --tx:#151420; --tx2:#5c5a72; --tx3:#8a889e;
+  --orb1-c: rgba(225,20,80,.09);
+  --orb2-c: rgba(63,166,33,.06);
+  --orb3-c: rgba(221,138,0,.06);
+  --av-bg: #e6e4f0;
+  --tabbar-bg: rgba(255, 255, 255, 0.85);
+  --input-bg: rgba(10,10,30,0.035);
+  --modal-overlay: rgba(20,10,40,.32);
+  --loading-bg: #f3f2f8;
+  --supcode-bg: rgba(10,10,30,0.035);
+  --tcc-bg: rgba(10,10,30,0.035);
+  --grain-op: 0;
+  --red-dk:#a30f39; --grn-dk:#2c7d12; --gold-dk:#a56a00;
+  --font-display: 'Fredoka', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ПЕРЕХОДЫ — плавная смена темы
+═══════════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
+  transition: background-color .25s ease, border-color .25s ease, color .15s ease, box-shadow .25s ease;
+}
+html, body { height: 100%; }
+body {
+  --r: 14px;
+  background: var(--bg); color: var(--tx);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  max-width: 430px; margin: 0 auto; overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--brd2); border-radius: 4px; }
+
+/* ── Pages ── */
+.page { display:none; flex-direction:column; padding-bottom:calc(96px + env(safe-area-inset-bottom,0px) + 20px); min-height:100dvh; position:relative; z-index:1; }
+.page.active { display:flex; animation:up .2s ease; }
+@keyframes up { from{opacity:0;transform:translateY(7px)} to{opacity:1;transform:none} }
+
+/* ── Атмосферные орбы ── */
+.orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(90px); }
+.orb1 { width:320px; height:320px; background:var(--orb1-c); top:-80px; right:-60px; }
+.orb2 { width:260px; height:260px; background:var(--orb2-c); bottom:120px; left:-70px; }
+.orb3 { width:180px; height:180px; background:var(--orb3-c); top:280px; right:20px; }
+
+/* ── Стеклянные карточки ── */
+.card, .hero, .alist, .subcrd, .tgroup, .profhero, .dlist, .setblock, .wdform, .rewcard {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-brd) !important;
+  box-shadow: var(--glass-shadow);
+  border-radius: 20px; padding: 20px; margin: 12px 16px 0;
+  position: relative; overflow: hidden;
+  transition: all 0.3s ease, background-color .25s ease, border-color .25s ease;
+}
+.profhero, .subcrd, .hero { border-radius: 26px; }
+.alist { padding: 0; }
+/* .tgroup: паддинг переносим на .tgroup-head/.tgroup-body, чтобы не суммировать
+   два уровня отступов друг на друга (это и «съедало» отступ у иконки слева) */
+.tgroup { padding: 0; }
+.card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.03),transparent 55%); pointer-events:none; }
+.clabel { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--tx3); margin-bottom:12px; }
+
+/* ── Кнопки ── */
+.btn { display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:14px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-weight:500; font-size:15px; position:relative; overflow:hidden; transition:filter .15s,transform .1s; }
+.btn::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(255,255,255,.1),transparent); pointer-events:none; }
+.btn:active { transform:scale(.96); filter:brightness(.85); }
+.btn-primary { background:var(--red2); color:#fff; padding:15px 20px; width:100%; box-shadow:0 2px 10px rgba(255,69,58,.22); }
+.btn-gold { background:var(--gold2); color:#fff; padding:15px 20px; width:100%; box-shadow:0 2px 10px rgba(255,159,10,.2); }
+.btn-green { background:var(--grn); color:#fff; padding:15px 20px; width:100%; box-shadow:0 2px 10px rgba(48,209,88,.2); }
+.btn-outline { background:var(--bg-glass); backdrop-filter:blur(10px); border:1px solid var(--brd); color:var(--tx); padding:13px 16px; border-radius:12px; }
+.btn-outline:hover { border-color:var(--brd2); }
+.btn-ghost { background:transparent; border:1px solid var(--brd2); color:var(--tx2); padding:9px 15px; border-radius:10px; font-size:13px; font-family:'Plus Jakarta Sans',sans-serif; cursor:pointer; font-weight:600; }
+
+/* ── Шапка ── */
+.topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 14px 0; position:relative; z-index:2; }
+.userpill { display:flex; align-items:center; gap:10px; background:var(--bg-glass); backdrop-filter:blur(10px); border:1px solid var(--glass-brd); border-radius:50px; padding:5px 13px 5px 5px; max-width:calc(100% - 100px); }
+.topbar-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+
+/* (кнопка смены темы убрана из шапки — переключатель теперь в Профиль → Оформление) */
+.segctrl { display:flex; gap:4px; background:var(--input-bg); border:1px solid var(--glass-brd); border-radius:12px; padding:4px; }
+.segopt { flex:1; text-align:center; padding:9px 6px; border-radius:9px; font-size:12.5px; font-weight:600; color:var(--tx2); cursor:pointer; transition:all .2s ease; }
+.segopt.active { background:var(--bg-glass-hover); color:var(--tx); box-shadow:0 2px 8px rgba(0,0,0,.15); }
+
+/* ── Аватар ── */
+.av, .avlg {
+  position:relative; background:var(--red2);
+  z-index:1; padding:2px; display:flex; align-items:center; justify-content:center;
+  font-size:15px; font-weight:500; color:#fff; flex-shrink:0; border-radius:50%;
+}
+.av { width:36px; height:36px; }
+.avlg { width:68px; height:68px; font-size:26px; font-weight:600; }
+.av::before, .avlg::before {
+  content:''; position:absolute; inset:2px; background:var(--av-bg); border-radius:50%; z-index:-1;
+}
+.av img, .avlg img { width:100%; height:100%; object-fit:cover; border-radius:50%; position:relative; z-index:2; }
+
+.uname { font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.helpbtn { width:40px; height:40px; border-radius:12px; background:var(--bg-glass); backdrop-filter:blur(10px); border:1px solid var(--glass-brd); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--tx3); flex-shrink:0; transition:border-color .2s; }
+.helpbtn:hover { border-color:var(--brd2); }
+
+/* ── Hero блок ── */
+.hglow { position:absolute; width:180px; height:180px; border-radius:50%; right:-40px; top:-40px; filter:blur(70px); pointer-events:none; }
+.ok .hglow { background:rgba(48,209,88,.1); } .bad .hglow { background:rgba(255,69,58,.12); }
+.sdot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.sdot.g { background:var(--grn); box-shadow:0 0 6px var(--gglow); animation:pg 2s infinite; }
+.sdot.r { background:var(--red2); box-shadow:0 0 6px rgba(255,69,58,.4); }
+@keyframes pg { 0%,100%{box-shadow:0 0 8px var(--gglow)} 50%{box-shadow:0 0 16px var(--gglow)} }
+.sindic { display:flex; align-items:center; gap:7px; margin-bottom:8px; }
+.slabel { font-size:11px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; }
+.ok .slabel { color:var(--grn); } .bad .slabel { color:var(--red2); }
+.stitle { font-size:21px; font-weight:600; margin-bottom:3px; }
+.ssub { font-size:12px; color:var(--tx2); }
+.dbadge { position:absolute; top:14px; right:14px; background:var(--red2); color:#fff; font-size:11px; font-weight:600; padding:3px 10px; border-radius:7px; letter-spacing:.02em; }
+
+/* ── Чипы ── */
+.chips { display:flex; gap:7px; overflow-x:auto; padding:10px 14px 0; scrollbar-width:none; }
+.chips::-webkit-scrollbar { display:none; }
+.chip { display:flex; align-items:center; gap:5px; flex-shrink:0; background:var(--bg-glass); backdrop-filter:blur(10px); border:1px solid var(--glass-brd); border-radius:20px; padding:6px 11px; font-size:12px; font-weight:500; color:var(--tx2); white-space:nowrap; }
+.chip svg { width:12px; height:12px; }
+.chip.r, .chip.g2, .chip.g { border-color:var(--glass-brd); color:var(--tx2); background:var(--bg-glass); }
+
+/* ── Action list ── */
+.aitem { display:flex; align-items:center; gap:13px; padding:14px 15px; cursor:pointer; transition:background .13s; position:relative; }
+.aitem:not(:last-child)::after { content:''; position:absolute; bottom:0; left:52px; right:0; height:1px; background:var(--brd); }
+.aitem:hover { background:var(--bg-glass-hover); } .aitem:active { background:rgba(255,255,255,0.05); }
+/* ── 3D-стеклянные иконки: блик сверху, тень снизу, лёгкий бортик ── */
+.aicon, .dicon, .tcard-ico, .tgroup-icon, .rewicon {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.25),
+    inset 0 -3px 5px rgba(0,0,0,.2),
+    0 3px 8px rgba(0,0,0,.28),
+    0 1px 0 rgba(255,255,255,.04);
+}
+.aicon::after, .dicon::after, .tcard-ico::after, .tgroup-icon::after, .rewicon::after {
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background: linear-gradient(155deg, rgba(255,255,255,.32) 0%, rgba(255,255,255,0) 42%, rgba(0,0,0,.12) 100%);
+}
+.aicon svg, .dicon svg, .tcard-ico svg, .tgroup-icon svg, .rewicon svg {
+  position: relative; z-index: 1;
+  filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.3));
+}
+.aicon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.aicon svg { width:17px; height:17px; }
+.aicon.r { background:var(--rdim); } .aicon.g { background:var(--gdim); } .aicon.g2 { background:var(--gdim2); } .aicon.a { background:var(--adim); }
+.atitle { font-size:14px; font-weight:600; } .asub { font-size:12px; color:var(--tx3); margin-top:1px; }
+.abadge { background:var(--red2); color:#fff; font-size:10px; font-weight:600; padding:2px 8px; border-radius:6px; }
+.aarrow { color:var(--tx3); font-size:16px; margin-left:auto; }
+
+/* ── Активная подписка ── */
+.daybadge { display:inline-flex; align-items:center; background:var(--gdim); border:1px solid rgba(39,174,96,.3); border-radius:7px; padding:3px 10px; font-size:12px; font-weight:500; color:var(--grn); }
+
+/* ── Аккордеон тарифов ── */
+.tgroups { display:flex; flex-direction:column; gap:8px; margin:12px 14px 0; }
+.tgroup-head { display:flex; align-items:center; gap:14px; padding:18px 20px; cursor:pointer; user-select:none; }
+.tgroup-icon { width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.tgroup-info { flex:1; min-width:0; }
+.tgroup-name { font-size:15px; font-weight:500; line-height:1.25; }
+.tgroup-sub { font-size:11.5px; color:var(--tx3); margin-top:3px; }
+.tgroup-badge { font-size:10px; font-weight:600; padding:2px 8px; border-radius:6px; background:rgba(255,159,10,.14); color:var(--gold2); border:1px solid rgba(255,159,10,.3); }
+.tgroup-arrow { color:var(--tx3); transition:transform .22s; flex-shrink:0; }
+.tgroup.open .tgroup-arrow { transform:rotate(180deg); }
+.tgroup-body { display:none; border-top:1px solid var(--glass-brd); padding:16px 20px 20px; }
+.tgroup.open .tgroup-body { display:block; }
+
+/* ── ПРЕМИАЛЬНЫЕ КАРТОЧКИ ТАРИФОВ ── */
+.tcard {
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-brd);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.tcard:last-child { margin-bottom: 0; }
+.tcard:hover {
+  border-color: var(--glass-brd-active);
+  transform: translateY(-2px);
+  background: var(--bg-glass-hover);
+  box-shadow: 0 8px 28px rgba(200,50,30,.1);
+}
+.tcard.sel {
+  background: rgba(232, 32, 16, 0.08) !important;
+  border: 1px solid var(--red2) !important;
+  box-shadow: 0 0 0 1px var(--red2), inset 0 0 0 1px rgba(255,69,58,.06);
+}
+.tcard.sel::before {
+  content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+  background:radial-gradient(circle,rgba(255,69,58,.08) 0%,transparent 70%); pointer-events:none;
+}
+/* Бейдж "Популярный" — теперь инлайн-тег рядом с названием, не перекрывает цену */
+.tcard-badge {
+  display: inline-flex; align-items:center; margin-left:7px; vertical-align:middle;
+  background: var(--gdim2);
+  color: var(--gold2); font-size: 9.5px; font-weight: 700; padding: 3px 9px;
+  border: 1px solid rgba(255,176,32,.35);
+  letter-spacing: .02em; white-space:nowrap;
+}
+.tcard-header { display:flex; align-items:flex-start; gap:13px; margin-bottom:13px; position:relative; z-index:2; }
+.tcard-ico { width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.tcard-ico svg { width:20px; height:20px; }
+.tcard-meta { flex:1; min-width:0; padding-top:1px; }
+.tcard-name { font-size:15px; font-weight:600; line-height:1.3; display:flex; align-items:center; flex-wrap:wrap; }
+.tcard-days { font-size:12px; color:var(--tx3); margin-top:3px; }
+.tcard-price { text-align:right; flex-shrink:0; padding-left:8px; }
+.tcard-usd { font-size:19px; font-weight:700; color:var(--gold2); line-height:1.15; white-space:nowrap; }
+.tcard-cur { font-size:10px; color:var(--tx3); margin-top:2px; }
+.tcard-usd-orig { font-size:10px; color:var(--tx3); margin-top:2px; }
+.tcard-chips { display:flex; flex-wrap:wrap; gap:7px; position:relative; z-index:2; padding-top:12px; margin-top:2px; border-top:1px solid var(--glass-brd); }
+.tcc { display:flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; padding:5px 10px; border-radius:6px; color:var(--tx2); background:var(--tcc-bg); border:1px solid var(--brd); }
+.tcc svg { width:11px; height:11px; flex-shrink:0; }
+.tlist { display:none; }
+
+
+/* ── Ряд валют — расширенный ── */
+.currow { display:flex; gap:6px; margin:10px 14px 0; flex-wrap:wrap; }
+.curpill {
+  flex:1; min-width:calc(20% - 5px); padding:8px 4px; text-align:center; border-radius:11px;
+  font-size:12px; font-weight:500; cursor:pointer; color:var(--tx2);
+  transition:all .3s ease;
+  background: var(--bg-glass); backdrop-filter:blur(10px); border:1px solid var(--glass-brd);
+  position:relative;
+  display:flex; align-items:center; justify-content:center; gap:4px;
+}
+.curpill svg { flex-shrink:0; }
+#cur-STARS.active { background:var(--gdim2); border-color:var(--gold2); color:var(--tx); }
+#cur-STARS svg { color:var(--gold2); }
+#cur-STARS.active svg { color:var(--gold2); }
+.curpill.active {
+  background:var(--rdim);
+  border-color:var(--red2);
+  color:var(--tx);
+}
+/* Индикатор загрузки на пилюле */
+.curpill.loading::after {
+  content:''; position:absolute; bottom:3px; left:50%; transform:translateX(-50%);
+  width:16px; height:2px; background:var(--red2); border-radius:1px;
+  animation:curload .7s ease infinite alternate;
+}
+@keyframes curload { from{opacity:.3} to{opacity:1} }
+
+/* ── Липкая панель оплаты ── */
+.promobox { display:flex; gap:8px; margin:12px 14px 0; }
+.promobox .ifield { margin-bottom:0; flex:1; text-transform:uppercase; letter-spacing:.03em; }
+.promobox .btn-outline { padding:0 16px; font-size:12.5px; white-space:nowrap; }
+.promo-status { margin:8px 14px 0; font-size:12px; padding:8px 12px; border-radius:10px; display:none; }
+.promo-status.ok { display:block; background:var(--gdim); color:var(--grn); }
+.promo-status.err { display:block; background:var(--rdim); color:var(--red2); }
+.paybar { position:sticky; bottom:calc(90px + env(safe-area-inset-bottom,0px)); padding:10px 14px; background:linear-gradient(to top,var(--bg) 55%,transparent); z-index:10; }
+.paynote { font-size:11px; color:var(--tx3); text-align:center; margin-top:6px; }
+
+/* ── Статистика ── */
+.statrow { display:flex; gap:8px; padding:12px 14px 0; }
+.statbox { flex:1; background:var(--bg-glass); backdrop-filter:blur(16px); border:1px solid var(--glass-brd); border-radius:20px; padding:13px 10px; text-align:center; box-shadow:var(--glass-shadow); }
+.statval { font-size:22px; font-weight:600; letter-spacing:-.03em; }
+.statval.r { color:var(--red2); } .statval.g2 { color:var(--gold2); } .statval.g { color:var(--grn); }
+.statlbl { font-size:11px; color:var(--tx3); margin-top:3px; font-weight:500; }
+
+/* ── Реферальная система ── */
+.refbox { background:var(--input-bg); border:1px solid var(--brd); border-radius:10px; padding:11px; font-size:12px; font-family:'JetBrains Mono',monospace; color:var(--gold2); word-break:break-all; line-height:1.5; }
+/* Список рефералов */
+.ref-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.ref-item { display:flex; align-items:center; gap:10px; background:var(--input-bg); border:1px solid var(--brd); border-radius:10px; padding:9px 12px; }
+.ref-item-av { width:30px; height:30px; border-radius:50%; background:var(--rdim); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:500; color:var(--red2); flex-shrink:0; }
+.ref-item-name { font-size:13px; font-weight:600; flex:1; }
+.ref-item-status { font-size:10px; font-weight:500; padding:2px 7px; border-radius:5px; }
+.ref-item-status.active { background:var(--gdim); color:var(--grn); border:1px solid rgba(39,174,96,.25); }
+.ref-item-status.invited { background:var(--rdim); color:var(--tx3); border:1px solid var(--brd); }
+
+/* Прогресс-бар рефералов */
+.progtrack { display:flex; align-items:center; }
+.progdw { display:flex; flex-direction:column; align-items:center; gap:5px; }
+.progdot { width:34px; height:34px; border-radius:50%; background:var(--tcc-bg); border:2px solid var(--brd); display:flex; align-items:center; justify-content:center; color:var(--tx3); transition:all .3s; }
+.progdot svg { width:15px; height:15px; }
+.progdot.done { background:var(--rdim); border-color:rgba(255,69,58,.5); color:var(--red2); }
+.progline { flex:1; height:2px; background:var(--brd); transition:background .3s; }
+.progline.done { background:var(--red); }
+.prognum { font-size:11px; color:var(--tx3); font-weight:600; }
+.balrow { display:flex; align-items:center; justify-content:space-between; padding:12px 14px 0; }
+.ballbl { font-size:12px; color:var(--tx3); font-weight:600; margin-bottom:3px; }
+.balval { font-size:26px; font-weight:600; color:var(--gold2); }
+
+/* Счётчик бонусов */
+.bonus-count { font-size:11px; color:var(--tx3); margin-top:6px; }
+
+/* ── Reward card ── */
+.rewcard { display:flex; align-items:flex-start; gap:13px; }
+.rewicon { width:38px; height:38px; border-radius:10px; background:var(--gdim2); border:1px solid rgba(255,159,10,.25); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.rewicon svg { width:19px; height:19px; }
+.rewtitle { font-size:14px; font-weight:500; color:var(--gold2); margin-bottom:3px; }
+.rewsub { font-size:12px; color:var(--tx3); line-height:1.5; }
+
+/* ── Профиль ── */
+.subbadge { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:500; padding:4px 9px; border-radius:7px; margin-bottom:12px; }
+.subbadge.on { background:var(--gdim); color:var(--grn); border:1px solid rgba(39,174,96,.25); }
+.subbadge.off { background:var(--rdim); color:var(--red2); border:1px solid rgba(231,76,60,.2); }
+.profname { font-size:22px; font-weight:600; letter-spacing:-.02em; }
+.profhnd { font-size:13px; color:var(--tx2); margin-top:3px; }
+.profmeta { display:flex; gap:22px; margin-top:14px; }
+.pmi label { font-size:9px; color:var(--tx3); text-transform:uppercase; letter-spacing:.1em; font-weight:500; }
+.pmi p { font-size:11px; font-weight:600; margin-top:2px; font-family:'JetBrains Mono',monospace; }
+
+/* ── Data list ── */
+.ditem { display:flex; align-items:center; gap:13px; padding:13px 15px; position:relative; }
+.ditem:not(:last-child)::after { content:''; position:absolute; bottom:0; left:50px; right:0; height:1px; background:var(--glass-brd); }
+.dicon { width:34px; height:34px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.dicon svg { width:16px; height:16px; }
+.dicon.r { background:var(--rdim); } .dicon.g { background:var(--gdim); } .dicon.g2 { background:var(--gdim2); }
+.dbody { flex:1; min-width:0; }
+.dlabel { font-size:11px; color:var(--tx3); font-weight:600; margin-bottom:2px; }
+.dval { font-size:13px; font-weight:600; font-family:'JetBrains Mono',monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dval.g { color:var(--grn); } .dval.r { color:var(--red2); } .dval.g2 { color:var(--gold2); }
+.dact { background:rgba(255,255,255,0.05); border:1px solid var(--glass-brd); color:var(--tx2); border-radius:8px; padding:6px 12px; font-size:12px; font-weight:600; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; white-space:nowrap; flex-shrink:0; transition:all .15s; }
+.dact:hover { background:rgba(255,255,255,0.1); border-color:var(--brd2); }
+
+/* ── Инпуты ── */
+.ifield { width:100%; background:var(--input-bg); border:1px solid var(--glass-brd); color:var(--tx); border-radius:10px; padding:10px 12px; font-size:13px; font-family:'Plus Jakarta Sans',sans-serif; outline:none; transition:border-color .2s; margin-bottom:8px; user-select:text; -webkit-user-select:text; }
+.ifield:focus { border-color:rgba(255,69,58,.5); }
+.ifield::placeholder { color:var(--tx3); }
+
+/* ── Секция настроек ── */
+.setsec { display:none; margin:8px 14px 0; }
+.supcode { background:var(--supcode-bg); border:1px solid var(--brd2); border-radius:9px; padding:11px 13px; margin-top:8px; }
+.supcval { font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:600; color:var(--gold2); }
+
+/* ── История платежей ── */
+.phitem { padding:9px 0; border-bottom:1px solid var(--glass-brd); font-size:12px; }
+.phitem:last-child { border-bottom:none; }
+.phname { font-weight:600; color:var(--tx); margin-bottom:2px; }
+.phmeta { color:var(--tx3); }
+.phamt { font-weight:500; font-family:'JetBrains Mono',monospace; }
+.phamt.paid { color:var(--grn); } .phamt.pending { color:var(--gold2); }
+
+/* ── Таббар — плавающий пилл ── */
+.tabbar {
+  position:fixed; bottom:calc(env(safe-area-inset-bottom,0px) + 14px);
+  left:50%; transform:translateX(-50%);
+  width:calc(100% - 32px); max-width:398px;
+  background:var(--tabbar-bg); backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px);
+  border:1px solid var(--glass-brd);
+  border-radius:26px; display:flex; padding:8px 8px; height:62px;
+  align-items:center; z-index:100;
+  box-shadow:0 8px 32px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.06);
+  transition: background .25s ease;
+}
+.tabitem { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:5px 4px; border-radius:18px; transition:all .2s ease; position:relative; }
+.tabitem:active { transform:scale(.93); }
+.tabitem.active { background:rgba(255,69,58,.12); }
+.tabitem.active .tibg { color:var(--red2); }
+.tabitem.active .tilabel { color:var(--red2); }
+.tibg { width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--tx3); transition:all .2s; }
+.tibg svg { width:18px; height:18px; }
+.tilabel { font-size:10px; font-weight:600; color:var(--tx3); transition:all .2s; letter-spacing:.01em; }
+
+/* ── Экран загрузки ── */
+#loading { position:fixed; inset:0; background:var(--loading-bg); display:flex; align-items:center; justify-content:center; z-index:9999; flex-direction:column; gap:18px; transition:opacity .3s; }
+#loading.hide { opacity:0; pointer-events:none; }
+.llogo {
+  position:relative; overflow:hidden; width:60px; height:60px; border-radius:17px; background:var(--red2);
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.3),
+    inset 0 -3px 6px rgba(0,0,0,.22),
+    0 4px 20px rgba(255,69,58,.3);
+  animation:lp 2s ease infinite;
+}
+.llogo::after {
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background: linear-gradient(155deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 45%, rgba(0,0,0,.12) 100%);
+}
+.llogo svg { position:relative; z-index:1; filter: drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
+.llogo svg { width:30px; height:30px; color:#fff; }
+@keyframes lp { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+.ltxt { font-size:13px; color:var(--tx3); }
+
+/* ── Тост ── */
+#toast { position:fixed; top:22px; left:50%; transform:translateX(-50%) translateY(-60px); background:var(--bg-glass); backdrop-filter:blur(16px); border:1px solid var(--glass-brd); box-shadow:var(--glass-shadow); color:var(--tx); padding:9px 17px; border-radius:12px; font-size:13px; font-weight:500; z-index:9998; transition:transform .28s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; pointer-events:none; }
+#toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ── Заголовок страницы ── */
+.ptitle { padding:18px 14px 0; text-align:center; }
+.ptitle h1 { font-size:22px; font-weight:600; letter-spacing:-.02em; }
+.ptitle p { font-size:13px; color:var(--tx2); margin-top:3px; }
+
+/* ── Модалка ── */
+.modal-sheet { background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--brd2); box-shadow:var(--glass-shadow); border-radius:26px 26px 0 0; width:100%; max-width:430px; padding:24px 20px calc(28px + env(safe-area-inset-bottom,0px)); position:relative; }
+.modal-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.05); border:1px solid var(--glass-brd); color:var(--tx2); width:30px; height:30px; border-radius:8px; font-size:18px; cursor:pointer; line-height:1; display:flex; align-items:center; justify-content:center; }
+.pm-status { text-align:center; margin-bottom:14px; padding:10px; border-radius:10px; font-size:13px; font-weight:600; }
+.pm-status.pending { background:var(--adim); color:var(--amb); border:1px solid rgba(211,84,0,.25); }
+.pm-status.paid { background:var(--gdim); color:var(--grn); border:1px solid rgba(39,174,96,.25); }
+
+/* ── Щит Dota ── */
+.dota-shield { position:absolute; bottom:-10px; right:-10px; opacity:.04; pointer-events:none; }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   ORB LAYER — round, chunky, "pressable" gamer UI
+   Signature: everything reads as a soft physical object — pill buttons
+   with a solid 3D underside you can press, round glowing badges/icons,
+   floating blob orbs. Radiant (green) / Dire (red) / Gold stay the
+   functional colour language; shape carries the personality this time.
+   ══════════════════════════════════════════════════════════════════════ */
+
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+/* soft floating blobs replace the flat orbs */
+.orb { filter: blur(60px); opacity:.9; animation: drift 14s ease-in-out infinite alternate; }
+.orb1 { width:300px; height:300px; border-radius:50%; }
+.orb2 { width:260px; height:260px; border-radius:50%; animation-duration: 18s; }
+.orb3 { width:200px; height:200px; border-radius:50%; animation-duration: 11s; }
+@keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(-14px,18px) scale(1.08); } }
+
+/* ── Cards: big soft rounding, glow ring instead of hard border ── */
+.card, .hero, .alist, .subcrd, .tgroup, .profhero, .dlist, .setblock, .wdform, .rewcard, .statbox {
+  border-radius: 28px !important;
+}
+.hero, .profhero, .subcrd { border-radius: 32px !important; }
+.hero { box-shadow: var(--glass-shadow), 0 0 0 1px var(--rdim), 0 10px 34px var(--rglow); }
+.hero.ok { box-shadow: var(--glass-shadow), 0 0 0 1px var(--gdim), 0 10px 34px var(--gglow); }
+.subcrd { box-shadow: var(--glass-shadow), 0 0 0 1px var(--gdim), 0 8px 26px var(--gglow); }
+.tcard { border-radius: 22px !important; }
+.tcard.sel { box-shadow: 0 0 0 2px var(--red2), 0 10px 26px var(--rglow); }
+
+/* ── Typography: Fredoka — round, friendly, still bold ── */
+.stitle, .profname, .statval, .tcard-usd, .balval, .ptitle h1, .tgroup-name,
+.tcard-name, .supcval, .dval, .daybadge, #pm-amount, .llogo ~ .ltxt, .rewtitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.ptitle h1 { font-size: 25px; }
+.stitle { font-size: 22px; }
+.statval { font-size: 25px; }
+
+/* ── Buttons: full pill, chunky pressable 3D underside ── */
+.btn-primary, .btn-gold, .btn-green {
+  border-radius: 999px !important;
+  font-family: var(--font-display); font-weight:600; letter-spacing:.01em; font-size:15px;
+  transition: transform .12s ease, box-shadow .12s ease, filter .15s;
+}
+.btn-primary { background: var(--red2); box-shadow: 0 5px 0 var(--red-dk), 0 10px 22px var(--rglow); }
+.btn-green   { background: var(--grn);  color:#0d2004; box-shadow: 0 5px 0 var(--grn-dk), 0 10px 22px var(--gglow); }
+.btn-gold    { background: var(--gold2); box-shadow: 0 5px 0 var(--gold-dk), 0 10px 22px var(--gglow2); }
+.btn-primary:active, .btn-gold:active, .btn-green:active {
+  transform: translateY(4px) scale(.98); filter:none;
+}
+.btn-primary:active { box-shadow: 0 1px 0 var(--red-dk); }
+.btn-green:active   { box-shadow: 0 1px 0 var(--grn-dk); }
+.btn-gold:active    { box-shadow: 0 1px 0 var(--gold-dk); }
+.btn-outline { border-radius: 999px !important; }
+.btn-ghost { border-radius: 999px; font-family: var(--font-display); font-weight:600; }
+
+/* ── Round icon badges with a soft glow ring ── */
+.aicon, .dicon, .tcard-ico, .tgroup-icon, .rewicon {
+  border-radius: 50% !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 4px 10px rgba(0,0,0,.25);
+}
+
+/* ── Pills everywhere: chips, currency, tags, badges ── */
+.chip, .curpill, .tcc, .dact, .segopt, .abadge, .dbadge, .tcard-badge, .tgroup-badge {
+  border-radius: 999px !important;
+}
+.curpill.active { box-shadow: 0 0 0 2px var(--red2) inset, 0 0 16px var(--rglow); transform: scale(1.03); }
+#cur-STARS.active { box-shadow: 0 0 0 2px var(--gold2) inset, 0 0 16px var(--gglow2); }
+
+/* ── Avatar: glowing ring, feels like a character portrait ── */
+.av, .avlg { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--rdim), 0 4px 14px rgba(0,0,0,.3); }
+
+/* ── Tab bar: full capsule dock, bouncy active state ── */
+.tabbar { border-radius: 999px !important; }
+.tabitem.active { border-radius: 999px; animation: tabpop .28s ease; }
+@keyframes tabpop { 0%{transform:scale(.85)} 60%{transform:scale(1.08)} 100%{transform:scale(1)} }
+.tilabel { font-family: var(--font-display); font-weight:600; font-size:10px; }
+
+/* ── Referral progress: glowing round nodes ── */
+.progdot { border-radius: 50%; }
+.progdot.done { box-shadow: 0 0 0 3px var(--rdim), 0 0 14px var(--rglow); }
+
+/* ── Modal: rounded top like a soft tray ── */
+.modal-sheet { border-radius: 32px 32px 0 0 !important; }
+
+/* ── Inputs: pill-ish soft fields ── */
+.ifield { border-radius: 16px; }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div id="loading">
+  <div class="llogo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+  </div>
+  <div class="ltxt" id="ltxt">Загрузка...</div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ════════ HOME ════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="topbar">
+    <div class="userpill">
+      <div class="av" id="av-sm">?</div>
+      <span class="uname" id="uname-sm">Загрузка...</span>
+    </div>
+
+  </div>
+
+  <div class="hero bad" id="hero">
+    <div class="hglow"></div>
+    <svg class="dota-shield" width="120" height="140" viewBox="0 0 24 28" fill="currentColor" style="color:#fff">
+      <path d="M12 0L0 4v10c0 7 5 12 12 14 7-2 12-7 12-14V4L12 0z"/>
+    </svg>
+    <div class="sindic">
+      <div class="sdot r" id="sdot"></div>
+      <span class="slabel" id="slabel">Нет защиты</span>
+    </div>
+    <div class="stitle" id="stitle">Вы не защищены</div>
+    <div class="ssub">Обход РКН · 50+ локаций · VLESS Reality</div>
+    <div class="dbadge" id="discbadge">-79%</div>
+  </div>
+
+  <div class="chips">
+    <div class="chip r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Обход РКН</div>
+    <div class="chip g2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>50+ локаций</div>
+    <div class="chip g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Без лимитов</div>
+  </div>
+
+  <div class="subcrd" id="subcrd" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="sdot g"></div>
+        <span style="font-size:13px;font-weight:500;color:var(--grn)">VPN активен</span>
+      </div>
+      <div class="daybadge" id="daybadge">— дн.</div>
+    </div>
+    <div style="font-size:12px;color:var(--tx3);margin-bottom:13px">До: <span style="color:var(--tx);font-weight:600" id="subdate">—</span></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-green" style="flex:1;padding:11px" onclick="doAction('get_config')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Конфиг
+      </button>
+      <button class="btn btn-outline" style="flex:1;padding:11px" onclick="doAction('get_stats')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Трафик
+      </button>
+    </div>
+  </div>
+
+  <div id="cta" style="padding:10px 14px 0">
+    <button class="btn btn-primary" onclick="switchTab('vpn')">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Купить подписку
+    </button>
+  </div>
+
+  <div class="alist">
+    <div class="aitem" onclick="switchTab('ref')">
+      <div class="aicon g2"><svg viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div style="flex:1"><div class="atitle">Пригласить друзей</div><div class="asub">15% с каждой оплаты реферала</div></div>
+      <div class="abadge">15%</div>
+      <div class="aarrow">›</div>
+    </div>
+    <div class="aitem" onclick="doAction('get_config')">
+      <div class="aicon r"><svg viewBox="0 0 24 24" fill="none" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <div style="flex:1"><div class="atitle">Получить VLESS конфиг</div><div class="asub">QR-код · ссылка в чат</div></div>
+      <div class="aarrow">›</div>
+    </div>
+    <div class="aitem" onclick="doAction('get_stats')">
+      <div class="aicon g"><svg viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div style="flex:1"><div class="atitle">Статистика трафика</div><div class="asub">Использование за период</div></div>
+      <div class="aarrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ VPN (ТАРИФЫ) ════════════════════════════════════════════════ -->
+<div class="page" id="page-vpn">
+  <div class="ptitle">
+    <h1>Тарифы</h1>
+    <p>Выберите подходящий тариф и оплатите.</p>
+  </div>
+
+  <!-- Валюты: USDT, TON, BTC, RUB, Stars -->
+  <div class="currow" id="currow">
+    <div class="curpill active" id="cur-USDT" onclick="selCur('USDT')"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#26A17B"/><path d="M8.7 8.53v-.02c-.06 0-.36.02-1.03.02-.53 0-.9-.02-1.03-.02v.02c-1.7-.08-2.97-.38-2.97-.74 0-.36 1.27-.66 2.97-.74v1.18c.14.01.51.03 1.04.03.64 0 .96-.02 1.02-.03V7.05c1.7.08 2.96.38 2.96.74 0 .36-1.26.66-2.96.74zm0-1.6v-1.06h2.37V4.3H4.9v1.57h2.37v1.06c-1.93.09-3.38.47-3.38.92 0 .45 1.45.83 3.38.92v3.3h1.43v-3.3c1.92-.09 3.37-.47 3.37-.92 0-.45-1.45-.83-3.37-.92z" fill="#fff"/></svg> USDT</div>
+    <div class="curpill"        id="cur-TON"  onclick="selCur('TON')"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#0098EA"/><path d="M11.2 5H4.8c-.66 0-1.08.71-.75 1.29l3.4 5.98c.25.44.88.44 1.13 0l3.4-5.98c.32-.58-.1-1.29-.76-1.29zM7.4 9.9 5.6 6.4c-.1-.2.04-.43.27-.43h1.53V9.9zm3.03-3.5L8.6 9.9V5.97h1.53c.23 0 .37.23.27.43z" fill="#fff"/></svg> TON</div>
+    <div class="curpill"        id="cur-BTC"  onclick="selCur('BTC')"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#F7931A"/><path d="M10.87 7.1c.13-.86-.53-1.32-1.43-1.63l.29-1.17-.72-.18-.28 1.14c-.19-.05-.39-.09-.58-.14l.29-1.15-.72-.18-.29 1.17c-.16-.04-.31-.07-.46-.11l-1-.25-.19.78s.54.12.53.13c.29.07.35.27.34.42l-.33 1.34c.02 0 .05.01.08.03l-.08-.02-.47 1.87c-.04.09-.13.22-.33.17.01.01-.53-.13-.53-.13l-.36.84 .94.23c.17.04.34.09.51.13l-.3 1.18.72.18.29-1.17c.2.05.39.1.57.15l-.29 1.16.72.18.3-1.18c1.23.23 2.15.14 2.54-.97.31-.9-.02-1.42-.66-1.76.47-.11.83-.42.92-1.05zm-1.64 2.3c-.22.9-1.72.41-2.2.29l.39-1.58c.49.12 2.04.37 1.81 1.29zm.22-2.32c-.2.81-1.45.4-1.86.3l.36-1.43c.4.1 1.71.29 1.5 1.13z" fill="#fff"/></svg> BTC</div>
+    <div class="curpill"        id="cur-STARS" onclick="selCur('STARS')"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8" fill="#FFB020"/><path d="M8 3.6l1.24 2.7 2.96.3-2.23 2.02.65 2.92L8 9.98l-2.62 1.56.65-2.92-2.23-2.02 2.96-.3z" fill="#fff"/></svg> Stars</div>
+  </div>
+
+  <div class="tgroups" id="tgroups">
+    <div style="text-align:center;padding:30px;color:var(--tx3)">Загрузка...</div>
+  </div>
+
+  <div class="tlist" id="tlist" style="display:none"></div>
+
+  <div class="promobox" id="promobox" style="display:none">
+    <input type="text" class="ifield" id="promo-input" placeholder="Промокод (необязательно)" maxlength="20" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn btn-outline" id="promo-apply-btn" onclick="applyPromo()">Применить</button>
+  </div>
+  <div class="promo-status" id="promo-status" style="display:none"></div>
+
+  <div class="paybar" id="paybar" style="display:none">
+    <button class="btn btn-primary" id="pay-btn-open" onclick="doBuy()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Оплатить <span id="paylabel">тариф</span>
+    </button>
+    <div class="paynote">Безопасная оплата · Мгновенная активация</div>
+  </div>
+</div>
+
+<!-- ════════ РЕФЕРАЛЫ ════════════════════════════════════════════════════ -->
+<div class="page" id="page-ref">
+  <div class="ptitle"><h1>Пригласи друзей</h1><p>Получай 15% с каждой покупки реферала</p></div>
+
+  <div class="statrow">
+    <div class="statbox"><div class="statval r" id="rcount">0</div><div class="statlbl">Рефералов</div></div>
+    <div class="statbox"><div class="statval g2" id="rbonuses">0</div><div class="statlbl">Бонусов дн.</div></div>
+    <div class="statbox"><div class="statval g" id="rearn">$0</div><div class="statlbl">Заработано</div></div>
+  </div>
+
+  <div class="card">
+    <div class="clabel">Твоя реферальная ссылка</div>
+    <div class="refbox" id="reflink">Откройте через Telegram...</div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-primary" style="flex:1" onclick="shareRef()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Отправить
+      </button>
+      <button class="btn btn-outline" style="flex:1" onclick="copyRef()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Копировать
+      </button>
+    </div>
+  </div>
+
+  <!-- Прогресс к бонусным дням -->
+  <div class="card">
+    <div class="clabel">Прогресс до бонуса</div>
+    <div style="font-size:12px;color:var(--tx3);margin-bottom:14px">4 реферала = +2 дня к подписке</div>
+    <div class="progtrack">
+      <div class="progdw"><div class="progdot" id="pd1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="prognum">1</div></div>
+      <div class="progline" id="pl1"></div>
+      <div class="progdw"><div class="progdot" id="pd2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="prognum">2</div></div>
+      <div class="progline" id="pl2"></div>
+      <div class="progdw"><div class="progdot" id="pd3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="prognum">3</div></div>
+      <div class="progline" id="pl3"></div>
+      <div class="progdw"><div class="progdot" id="pd4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="prognum">4</div></div>
+    </div>
+    <div class="bonus-count" id="bonuscount">Бонусов получено: 0</div>
+  </div>
+
+  <div class="rewcard">
+    <div class="rewicon"><svg viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+    <div><div class="rewtitle">15% с покупок рефералов</div><div class="rewsub">Друг купил подписку — ты получаешь 15% на баланс. Вывод от $5 USDT. Каждые 4 реферала +2 дня к подписке.</div></div>
+  </div>
+
+  <!-- Список рефералов -->
+  <div class="card">
+    <div class="clabel">Ваши рефералы</div>
+    <div class="ref-list" id="reflist">
+      <div style="color:var(--tx3);font-size:13px;text-align:center;padding:10px 0">Пока нет рефералов</div>
+    </div>
+  </div>
+
+  <div class="balrow">
+    <div><div class="ballbl">Ваш баланс</div><div class="balval" id="balval">$0.00</div></div>
+    <button class="btn btn-gold" style="width:auto;padding:11px 18px" onclick="toggleWd()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+      Вывести
+    </button>
+  </div>
+  <div class="wdform" id="wdform" style="display:none">
+    <div class="clabel">Вывод (мин. $5)</div>
+    <input class="ifield" id="wdamt" type="number" placeholder="Сумма USDT" min="5" step="0.01"/>
+    <input class="ifield" id="wdwlt" type="text" placeholder="USDT-адрес (TRC20 / TON)"/>
+    <button class="btn btn-gold" onclick="doWithdraw()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Отправить заявку
+    </button>
+  </div>
+</div>
+
+<!-- ════════ ПРОФИЛЬ ══════════════════════════════════════════════════════ -->
+<div class="page" id="page-profile">
+  <div class="profhero">
+    <div style="display:flex;align-items:flex-start;gap:14px">
+      <div class="avlg" id="av-lg">?</div>
+      <div style="flex:1;padding-top:2px">
+        <div class="subbadge off" id="subbadge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          Без подписки
+        </div>
+        <div class="profname" id="profname">Пользователь</div>
+        <div class="profhnd" id="profhnd">@username</div>
+      </div>
+    </div>
+    <div class="profmeta">
+      <div class="pmi"><label>В системе с</label><p id="psince">—</p></div>
+      <div class="pmi"><label>UUID</label><p id="puuid">—</p></div>
+    </div>
+  </div>
+
+  <div class="dlist">
+    <div class="ditem">
+      <div class="dicon r"><svg viewBox="0 0 24 24" fill="none" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="dbody"><div class="dlabel">ID Аккаунта</div><div class="dval" id="d-id">—</div></div>
+      <button class="dact" onclick="clip(String(S.uid));toast('📋 ID скопирован!')">Копировать</button>
+    </div>
+    <div class="ditem">
+      <div class="dicon g"><svg viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="dbody"><div class="dlabel">Трафик ↑ / ↓</div><div class="dval" id="d-traf">—</div></div>
+    </div>
+    <div class="ditem">
+      <div class="dicon r"><svg viewBox="0 0 24 24" fill="none" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="dbody"><div class="dlabel">Telegram</div><div class="dval" id="d-tg">—</div></div>
+    </div>
+    <div class="ditem">
+      <div class="dicon g2"><svg viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+      <div class="dbody"><div class="dlabel">Реферальный баланс</div><div class="dval g2" id="d-bal">$0.00</div></div>
+      <button class="dact" onclick="switchTab('ref')">Вывести</button>
+    </div>
+  </div>
+
+  <div class="dlist">
+    <div class="ditem" id="subrow">
+      <div class="dicon" style="background:var(--rdim)"><svg viewBox="0 0 24 24" fill="none" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="dbody"><div class="dval r">Подписка не активна</div><div class="dlabel" style="margin-top:2px">Купите тариф</div></div>
+      <button class="btn-ghost" onclick="switchTab('vpn')">Купить</button>
+    </div>
+  </div>
+
+  <div class="setsec" id="setsec">
+    <div class="setblock">
+      <div class="clabel">Промокод</div>
+      <button class="btn btn-outline" style="width:100%" onclick="togglePromoWeb()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 12 22H2V12l8.59-8.59a2 2 0 0 1 2.82 0l7.18 7.18a2 2 0 0 1 0 2.82z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+        Активировать промокод
+      </button>
+      <div class="wdform" id="promoform-web" style="display:none">
+        <input class="ifield" id="promo-web-input" type="text" placeholder="Введите код" maxlength="20" oninput="this.value=this.value.toUpperCase()"/>
+        <button class="btn btn-primary" onclick="redeemPromoWeb()">Активировать</button>
+      </div>
+    </div>
+    <div class="setblock">
+      <div class="clabel">История платежей</div>
+      <div id="phlist" style="color:var(--tx3);font-size:13px">Загрузка...</div>
+    </div>
+    <div class="setblock">
+      <div class="clabel">Поддержка</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px">Ваш код</div>
+      <div class="supcode">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="supcval" id="supcode">—</div>
+          <button class="dact" onclick="clip(String(S.uid));toast('📋 Скопировано!')">Копировать</button>
+        </div>
+        <div style="font-size:11px;color:var(--tx3);margin-top:6px">Сообщите код оператору</div>
+      </div>
+      <a href="https://t.me/VpnDota_support" target="_blank" style="text-decoration:none;display:block;margin-top:10px">
+        <button class="btn btn-outline" style="width:100%">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Написать в поддержку
+        </button>
+      </a>
+    </div>
+    <div class="setblock">
+      <div class="clabel">Оформление</div>
+      <div class="segctrl" id="themeseg">
+        <div class="segopt" data-v="dark"   onclick="setTheme('dark')">Тёмная</div>
+        <div class="segopt" data-v="light"  onclick="setTheme('light')">Светлая</div>
+        <div class="segopt" data-v="system" onclick="setTheme('system')">Как в Telegram</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ НАВБАР ══════════════════════════════════════════════════════ -->
+<nav class="tabbar">
+  <div class="tabitem active" id="tab-home" onclick="switchTab('home')">
+    <div class="tibg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+    <span class="tilabel">Главная</span>
+  </div>
+  <div class="tabitem" id="tab-vpn" onclick="switchTab('vpn')">
+    <div class="tibg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <span class="tilabel">VPN</span>
+  </div>
+  <div class="tabitem" id="tab-ref" onclick="switchTab('ref')">
+    <div class="tibg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <span class="tilabel">Рефералы</span>
+  </div>
+  <div class="tabitem" id="tab-profile" onclick="switchTab('profile')">
+    <div class="tibg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    <span class="tilabel">Профиль</span>
+  </div>
+</nav>
+
+<!-- ════════ МОДАЛКА ОПЛАТЫ ═══════════════════════════════════════════════ -->
+<div id="pay-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:var(--modal-overlay);backdrop-filter:blur(5px);align-items:flex-end;justify-content:center">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closePayModal()">×</button>
+    <div style="font-size:18px;font-weight:600;margin-bottom:4px">Оплата подписки</div>
+    <div id="pm-tariff" style="font-size:13px;color:var(--tx2);margin-bottom:18px"></div>
+    <div style="background:var(--input-bg);border:1px solid var(--glass-brd);border-radius:14px;padding:14px 16px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:12px;color:var(--tx3)">Сумма</span>
+        <span id="pm-amount" style="font-size:15px;font-weight:500;color:var(--gold2)"></span>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span style="font-size:12px;color:var(--tx3)">Номер счёта</span>
+        <span id="pm-invid" style="font-size:12px;color:var(--tx3)"></span>
+      </div>
+    </div>
+    <div id="pm-status" class="pm-status pending"></div>
+    <button id="pm-paylink" onclick="_openPayLink()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:7px;text-align:center;background:var(--red2);color:#fff;padding:15px;border:none;border-radius:var(--r);font-weight:500;font-size:15px;font-family:inherit;cursor:pointer;box-shadow:0 2px 12px rgba(255,69,58,.22);margin-bottom:10px;transition:background .3s,box-shadow .3s"></button>
+    <div style="font-size:11px;color:var(--tx3);text-align:center;line-height:1.5">
+      После оплаты подписка активируется автоматически<br>Страница обновится сама — закрывать не нужно
+    </div>
+  </div>
+</div>
+
+<!-- ════════ МОДАЛКА КОНФИГА ══════════════════════════════════════════════ -->
+<div id="cfg-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:var(--modal-overlay);backdrop-filter:blur(5px);align-items:flex-end;justify-content:center">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeConfigModal()">×</button>
+    <div style="font-size:18px;font-weight:600;margin-bottom:4px">Ваш VLESS конфиг</div>
+    <div id="cfg-days" style="font-size:12px;color:var(--grn);margin-bottom:18px"></div>
+    <div style="display:flex;justify-content:center;margin-bottom:16px">
+      <div id="cfg-qr" style="min-height:60px;display:flex;align-items:center;justify-content:center"></div>
+    </div>
+    <div style="background:var(--input-bg);border:1px solid var(--glass-brd);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:var(--tx3);margin-bottom:6px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">VLESS URI</div>
+      <div id="cfg-link" style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--gold2);word-break:break-all;line-height:1.5"></div>
+    </div>
+    <button class="btn btn-primary" onclick="copyConfig()" style="margin-bottom:10px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Скопировать конфиг
+    </button>
+    <div style="background:var(--input-bg);border:1px solid var(--glass-brd);border-radius:12px;padding:12px 14px">
+      <div style="font-size:12px;color:var(--tx2);margin-bottom:8px;font-weight:600">📱 Как подключиться</div>
+      <div style="font-size:11px;color:var(--tx3);line-height:1.7">
+        1. Скачайте <b style="color:var(--tx)">v2rayNG</b> (Android) или <b style="color:var(--tx)">Streisand</b> (iOS)<br>
+        2. Нажмите «Скопировать конфиг»<br>
+        3. В приложении: Добавить → Импорт из буфера обмена
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════ TELEGRAM INIT ════════════════════════════════════════════════ */
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.ready(); tg.expand();
+  tg.setHeaderColor?.('#06060b');
+  tg.setBackgroundColor?.('#06060b');
+}
+
+const TGU       = tg?.initDataUnsafe?.user || {};
+const INIT_DATA = tg?.initData || '';
+const BOT       = 'VpnDotaBot';
+const BASE      = window.location.origin;
+const _p        = new URLSearchParams(location.search);
+
+/* ════════ ТЕМА ══════════════════════════════════════════════════════ */
+// По умолчанию тема следует Telegram/системе, но пользователь может
+// закрепить конкретную тему вручную в Профиль → Оформление.
+function _systemTheme() {
+  if (tg?.colorScheme) return tg.colorScheme;
+  if (window.matchMedia?.('(prefers-color-scheme: light)').matches) return 'light';
+  return 'dark';
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  if (tg) {
+    const bgColor = theme === 'dark' ? '#06060b' : '#f3f2f8';
+    tg.setHeaderColor?.(bgColor);
+    tg.setBackgroundColor?.(bgColor);
+  }
+}
+function setTheme(pref) {
+  localStorage.setItem('theme_pref', pref);
+  applyTheme(pref === 'system' ? _systemTheme() : pref);
+  _syncThemeSeg(pref);
+}
+function _syncThemeSeg(pref) {
+  document.querySelectorAll('#themeseg .segopt').forEach(el => {
+    el.classList.toggle('active', el.dataset.v === pref);
+  });
+}
+(function initTheme() {
+  // Приложение спроектировано как тёмное по умолчанию (бренд-стиль), поэтому
+  // без явного выбора пользователя не следуем светной системной теме.
+  const pref = localStorage.getItem('theme_pref') || 'dark';
+  applyTheme(pref === 'system' ? _systemTheme() : pref);
+  _syncThemeSeg(pref);
+  tg?.onEvent?.('themeChanged', () => {
+    if ((localStorage.getItem('theme_pref') || 'dark') === 'system') applyTheme(_systemTheme());
+  });
+})();
+
+/* ════════ STATE ════════════════════════════════════════════════════════ */
+const S = {
+  uid:        TGU.id         || parseInt(_p.get('uid') || '0'),
+  fname:      TGU.first_name || _p.get('name') || 'Пользователь',
+  lname:      TGU.last_name  || '',
+  uname:      TGU.username   || '',
+  photo:      TGU.photo_url  || '',
+  subEnd:     0, subActive: false, daysLeft: 0,
+  balance:    0, refCount: 0, refEarned: 0,
+  trafUp:     0, trafDown: 0, createdAt: 0, uuid: '',
+  refLink:    '',
+  refBonuses: 0,      // Сколько бонусов (по +2 дня) уже получено
+  refProgress:0,      // Прогресс в текущей четвёрке (0–3)
+  referrals:  [],     // Список рефералов [{name, active}]
+  selId:      null, selPrice: 0, selPriceBase: 0, selName: '',
+  currency:   'USDT',
+  tariffs:    [],
+  rates:      {},     // {USDT:1, TON:price, BTC:price, RUB:rate, STARS:rate}
+  promoCode:    '',
+  promoDiscount: 0,
+};
+Object.defineProperty(S, 'fullname', { get() { return [S.fname, S.lname].filter(Boolean).join(' '); } });
+
+/* ════════ МОК ТАРИФОВ (если API не отвечает) ═══════════════════════ */
+const MOCK_TARIFFS = [
+  { id:1, name:'Лайт 30 дней',     price_usd:'1.99',  days:30,  gb_limit:50, devices:1 },
+  { id:2, name:'Лайт 90 дней',     price_usd:'4.99', days:90,  gb_limit:50, devices:1 },
+  { id:3, name:'Личный 30 дней',   price_usd:'1.99',  days:30,  gb_limit:0,  devices:1 },
+  { id:4, name:'Семейный 30 дней', price_usd:'3.99', days:30,  gb_limit:0,  devices:5 },
+  { id:5, name:'Максимальный 30',  price_usd:'4.99', days:30,  gb_limit:0,  devices:10 },
+  { id:6, name:'Игровой 30 дней',  price_usd:'3.99', days:30,  gb_limit:0,  devices:3 },
+];
+
+/* ════════ NAV ══════════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tabitem').forEach(t => t.classList.remove('active'));
+  $('page-' + tab)?.classList.add('active');
+  $('tab-'  + tab)?.classList.add('active');
+  if (tab !== 'profile') $('setsec').style.display = 'none';
+  scrollTo(0, 0);
+}
+function goSettings() {
+  switchTab('profile');
+  const s = $('setsec');
+  s.style.display = 'block';
+  setTimeout(() => s.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+}
+
+/* ════════ АВАТАР ═══════════════════════════════════════════════════════ */
+function setAv(el, photo, name) {
+  if (!el) return;
+  el.innerHTML = '';
+  if (photo) {
+    const img = new Image();
+    img.onerror = () => { el.innerHTML = ''; el.textContent = (name || '?')[0].toUpperCase(); };
+    img.src = photo; el.appendChild(img);
+  } else { el.textContent = (name || '?')[0].toUpperCase(); }
+}
+
+/* ════════ ДАННЫЕ ПРОФИЛЯ ═══════════════════════════════════════════════ */
+async function loadProfile() {
+  if (!S.uid) { renderGuest(); return; }
+  try {
+    const qs = new URLSearchParams({ user_id: S.uid });
+    if (INIT_DATA) qs.set('initData', INIT_DATA);
+    const r = await fetch(`${BASE}/api/profile?${qs}`, {
+      headers: INIT_DATA ? { 'X-Telegram-Init-Data': INIT_DATA } : {},
+    });
+    if (!r.ok) { console.warn('profile', r.status); return; }
+    const d = await r.json();
+    S.subEnd     = d.sub_end     || 0;
+    S.subActive  = d.sub_active  || false;
+    S.daysLeft   = d.days_left   || 0;
+    S.balance    = d.balance     || 0;
+    S.refCount   = d.ref_count   || 0;
+    S.refEarned  = d.ref_earned  || 0;
+    S.trafUp     = d.traffic_up  || 0;
+    S.trafDown   = d.traffic_down || 0;
+    S.createdAt  = d.created_at  || 0;
+    S.uuid       = d.uuid        || '';
+    S.referrals  = d.referrals   || [];
+    // Вычисляем прогресс и количество бонусов
+    S.refBonuses  = Math.floor(S.refCount / 4);
+    S.refProgress = S.refCount % 4;
+    renderAll(d);
+  } catch(e) { console.error('profile', e); }
+}
+
+/* ════════ ТАРИФЫ ════════════════════════════════════════════════════ */
+async function loadTariffs() {
+  try {
+    const r = await fetch(BASE + '/api/tariffs');
+    if (!r.ok) throw new Error(r.status);
+    S.tariffs = await r.json();
+    renderTariffs();
+  } catch(e) {
+    console.warn('Тарифы из API недоступны, используем мок', e);
+    S.tariffs = MOCK_TARIFFS;
+    renderTariffs();
+  }
+}
+
+/* ════════ КУРСЫ ВАЛЮТ ══════════════════════════════════════════════ */
+async function fetchRates() {
+  // Параллельно запрашиваем CoinGecko (TON, BTC) и ExchangeRate (RUB)
+  const [cryptoOk, fiatOk] = await Promise.allSettled([
+    fetchCryptoRates(),
+    fetchFiatRates(),
+  ]);
+  if (S.tariffs.length) updateAllCardPrices();
+}
+
+async function fetchCryptoRates() {
+  try {
+    const r = await fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=the-open-network,bitcoin&vs_currencies=usd',
+      { signal: AbortSignal.timeout(6000) }
+    );
+    const d = await r.json();
+    S.rates.TON = d['the-open-network']?.usd || 0;
+    S.rates.BTC = d.bitcoin?.usd || 0;
+  } catch(e) {
+    S.rates.TON = 0;
+    S.rates.BTC = 0;
+  }
+}
+
+async function fetchFiatRates() {
+  // RUB — через exchangerate.host, fallback 95
+  try {
+    const r = await fetch(
+      'https://api.exchangerate.host/latest?base=USD&symbols=RUB',
+      { signal: AbortSignal.timeout(5000) }
+    );
+    const d = await r.json();
+    S.rates.RUB = d.rates?.RUB || 95;
+  } catch(e) {
+    S.rates.RUB = 95; // fallback
+  }
+  // Telegram Stars: 1 Star = $0.019
+  S.rates.STARS = 1 / 0.019; // Stars за 1 USD
+  // USDT всегда 1
+  S.rates.USDT = 1;
+}
+
+/* Автообновление курсов каждые 5 минут */
+setInterval(fetchRates, 5 * 60 * 1000);
+
+/* ════════ КОНВЕРТАЦИЯ ══════════════════════════════════════════════ */
+// Возвращает {main, sub} — отформатированную цену в выбранной валюте
+function fmtConverted(usd) {
+  const c    = S.currency;
+  const rate = S.rates[c];
+
+  if (c === 'USDT') return { main: `$${(+usd).toFixed(2)}`, sub: 'USDT' };
+
+  if (!(rate > 0)) return { main: '—', sub: c };
+
+  if (c === 'BTC') {
+    const a = (+usd) / rate;
+    return { main: a.toFixed(6), sub: 'BTC' };
+  }
+  if (c === 'TON') {
+    const a = (+usd) / rate;
+    return { main: a.toFixed(2), sub: 'TON' };
+  }
+  if (c === 'RUB') {
+    const a = (+usd) * rate;
+    return { main: `₽\u202F${Math.round(a)}`, sub: 'RUB' };
+  }
+  if (c === 'STARS') {
+    // Stars = usd / 0.019, округляем вверх
+    const a = Math.ceil((+usd) / 0.019);
+    return { main: `⭐ ${a}`, sub: 'Stars' };
+  }
+  return { main: `$${(+usd).toFixed(2)}`, sub: c };
+}
+
+/* ════════ СМЕНА ВАЛЮТЫ ══════════════════════════════════════════════ */
+function selCur(c) {
+  S.currency = c;
+  document.querySelectorAll('.curpill').forEach(e => e.classList.remove('active', 'loading'));
+  const pill = $('cur-' + c);
+  if (pill) pill.classList.add('active');
+
+  // Если курс ещё не загружен — показываем индикатор и грузим
+  if (c !== 'USDT' && !(S.rates[c] > 0)) {
+    document.querySelectorAll('.tcard-usd').forEach(e => e.textContent = '...');
+    document.querySelectorAll('.tcard-cur').forEach(e => e.textContent = c);
+    if (pill) pill.classList.add('loading');
+    fetchRates().then(() => {
+      if (pill) pill.classList.remove('loading');
+      updateAllCardPrices();
+    });
+  } else {
+    updateAllCardPrices();
+  }
+}
+
+/* Обновление цен на всех карточках */
+function updateAllCardPrices() {
+  S.tariffs.forEach(t => {
+    const el = $('t' + t.id); if (!el) return;
+    const { main, sub } = fmtConverted(+t.price_usd);
+    const ue  = el.querySelector('.tcard-usd');
+    const ce  = el.querySelector('.tcard-cur');
+    const oe  = el.querySelector('.tcard-usd-orig');
+    if (ue) ue.textContent = main;
+    if (ce) ce.textContent = sub;
+    if (oe) oe.textContent = (S.currency !== 'USDT' && S.rates[S.currency] > 0)
+      ? `≈ $${(+t.price_usd).toFixed(2)}` : '';
+  });
+  if (S.selId) {
+    const t = S.tariffs.find(x => x.id === S.selId);
+    if (t) {
+      const { main, sub } = fmtConverted(+t.price_usd);
+      $('paylabel').textContent = `${main} ${sub}`;
+    }
+  }
+}
+
+/* ════════ РЕНДЕР ════════════════════════════════════════════════════ */
+function renderGuest() {
+  $('uname-sm').textContent = 'Открой в Telegram';
+  $('profname').textContent = 'Пользователь';
+  $('profhnd').textContent  = 'Откройте через Telegram';
+  $('reflink').textContent  = 'Откройте в Telegram';
+}
+
+function renderAll(d) {
+  setAv($('av-sm'), S.photo, S.fname);
+  setAv($('av-lg'), S.photo, S.fname);
+  $('uname-sm').textContent = S.fname;
+
+  /* Hero */
+  const hero = $('hero');
+  if (S.subActive) {
+    hero.className = 'hero ok';
+    $('sdot').className     = 'sdot g';
+    $('slabel').textContent = 'Защищён';
+    $('stitle').textContent = 'Вы защищены';
+    $('discbadge').style.display = 'none';
+    $('subcrd').style.display    = 'block';
+    $('cta').style.display       = 'none';
+    $('subdate').textContent  = fmtDate(S.subEnd);
+    $('daybadge').textContent = S.daysLeft + ' дн.';
+  } else {
+    hero.className = 'hero bad';
+    $('sdot').className     = 'sdot r';
+    $('slabel').textContent = 'Нет защиты';
+    $('stitle').textContent = 'Вы не защищены';
+    $('discbadge').style.display = 'block';
+    $('subcrd').style.display    = 'none';
+    $('cta').style.display       = 'block';
+  }
+
+  /* Реферальная статистика */
+  $('rcount').textContent   = S.refCount;
+  $('rbonuses').textContent = S.refBonuses * 2; // бонусные дни
+  $('rearn').textContent    = '$' + S.refEarned.toFixed(2);
+  $('balval').textContent   = '$' + S.balance.toFixed(2);
+  $('bonuscount').textContent = `Бонусов получено: ${S.refBonuses} × +2 дня`;
+
+  // Прогресс-бар (текущая четвёрка)
+  const prog = S.refProgress; // 0-3
+  for (let i = 1; i <= 4; i++) {
+    $('pd' + i)?.classList.toggle('done', i <= prog);
+    if (i < 4) $('pl' + i)?.classList.toggle('done', i <= prog);
+  }
+
+  // Список рефералов
+  renderReferrals(S.referrals);
+
+  S.refLink = `https://t.me/${BOT}?start=ref_${S.uid}`;
+  $('reflink').textContent = S.refLink;
+
+  /* Профиль */
+  $('profname').textContent = S.fullname;
+  const hnd = S.uname ? '@' + S.uname : S.fname;
+  $('profhnd').textContent = hnd;
+  $('d-tg').textContent    = hnd;
+  const uid = S.uid ? String(S.uid) : '—';
+  $('d-id').textContent    = uid;
+  $('supcode').textContent = uid;
+  $('d-bal').textContent   = '$' + S.balance.toFixed(2);
+  $('d-traf').textContent  = S.uuid ? `↑${S.trafUp} GB · ↓${S.trafDown} GB` : '—';
+  $('puuid').textContent   = S.uuid ? S.uuid.slice(0, 8) + '…' : '—';
+  $('psince').textContent  = S.createdAt
+    ? new Date(S.createdAt * 1000).toLocaleDateString('ru-RU', { day:'numeric', month:'short', year:'numeric' })
+    : '—';
+
+  const badge  = $('subbadge');
+  const subrow = $('subrow');
+  if (S.subActive) {
+    const ds = fmtDate(S.subEnd);
+    badge.className = 'subbadge on';
+    badge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> Активна до ${ds}`;
+    subrow.innerHTML = `
+      <div class="dicon" style="background:var(--gdim)"><svg viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div>
+      <div class="dbody"><div class="dval g">Активна</div><div class="dlabel" style="margin-top:2px">До ${ds} · ${S.daysLeft} дн.</div></div>`;
+  } else {
+    badge.className = 'subbadge off';
+    badge.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Без подписки`;
+    subrow.innerHTML = `
+      <div class="dicon" style="background:var(--rdim)"><svg viewBox="0 0 24 24" fill="none" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="dbody"><div class="dval r">Не активна</div><div class="dlabel" style="margin-top:2px">Купите тариф</div></div>
+      <button class="btn-ghost" onclick="switchTab('vpn')">Купить</button>`;
+  }
+  renderPayments(d.payments || []);
+}
+
+/* Рендер списка рефералов */
+function renderReferrals(list) {
+  const el = $('reflist');
+  if (!list || !list.length) {
+    el.innerHTML = '<div style="color:var(--tx3);font-size:13px;text-align:center;padding:10px 0">Пока нет рефералов</div>';
+    return;
+  }
+  el.innerHTML = list.map(r => {
+    const isActive = r.active || r.status === 'active';
+    const statusClass = isActive ? 'active' : 'invited';
+    const statusLabel = isActive ? 'Активен' : 'Приглашён';
+    const initial = (r.name || r.username || '?')[0].toUpperCase();
+    return `<div class="ref-item">
+      <div class="ref-item-av">${initial}</div>
+      <div class="ref-item-name">${r.name || r.username || 'Пользователь'}</div>
+      <div class="ref-item-status ${statusClass}">${statusLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════ РЕНДЕР ТАРИФОВ ════════════════════════════════════════════ */
+function renderTariffs() {
+  const el = $('tgroups');
+  if (!S.tariffs.length) {
+    el.innerHTML = '<div style="text-align:center;padding:28px;color:var(--tx3)">Тарифы не найдены</div>';
+    return;
+  }
+
+  // SVG-иконки для каждой категории
+  const SVG = {
+    lite:     `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+    personal: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+    family:   `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="1.5" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    max:      `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff453a" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    game:     `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#30d158" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="17" cy="12" r="1" fill="#30d158"/><circle cx="15" cy="14" r="1" fill="#30d158"/></svg>`,
+  };
+
+  const GROUPS = [
+    { key:'lite',     label:'Лайт',         color:'rgba(200,50,50,.1)',   match:t=>/лайт|lite/i.test(t.name),  desc:'Базовый доступ', badge:null },
+    { key:'personal', label:'Личный',       color:'rgba(180,100,20,.1)', match:t=>/личн/i.test(t.name),        desc:'1 устройство',   badge:null },
+    { key:'family',   label:'Семейный',     color:'rgba(200,146,42,.1)', match:t=>/семей/i.test(t.name),       desc:'До 5 устройств', badge:'Популярный' },
+    { key:'max',      label:'Максимальный', color:'rgba(160,20,20,.14)', match:t=>/макс/i.test(t.name),        desc:'Безлимит',       badge:null },
+    { key:'game',     label:'Игровой',      color:'rgba(39,174,96,.1)',  match:t=>/игр/i.test(t.name),         desc:'Низкий пинг',    badge:null },
+  ];
+
+  const buckets = {}; GROUPS.forEach(g => buckets[g.key] = []);
+  const other   = [];
+  S.tariffs.forEach(t => {
+    const g = GROUPS.find(g => g.match(t));
+    if (g) buckets[g.key].push(t); else other.push(t);
+  });
+
+  let html = '';
+  GROUPS.forEach(g => {
+    const items = buckets[g.key];
+    if (!items.length) return;
+    const minP = Math.min(...items.map(t => +t.price_usd));
+    const { main: minMain, sub: minSub } = fmtConverted(minP);
+    html += `
+    <div class="tgroup" id="tgrp-${g.key}" onclick="toggleGroup('${g.key}')">
+      <div class="tgroup-head">
+        <div class="tgroup-icon" style="background:${g.color}">${SVG[g.key] || g.label[0]}</div>
+        <div class="tgroup-info">
+          <div class="tgroup-name">${g.label}${g.badge ? ` <span class="tgroup-badge">🔥 ${g.badge}</span>` : ''}</div>
+          <div class="tgroup-sub">от ${minMain} ${minSub} · ${g.desc}</div>
+        </div>
+        <svg class="tgroup-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="tgroup-body">${items.map(t => renderTariffCard(t, g)).join('')}</div>
+    </div>`;
+  });
+  if (other.length) {
+    html += `<div class="tgroup open" id="tgrp-other">
+      <div class="tgroup-head" onclick="toggleGroup('other')">
+        <div class="tgroup-icon" style="background:rgba(255,255,255,0.05)">📦</div>
+        <div class="tgroup-info"><div class="tgroup-name">Другие</div></div>
+        <svg class="tgroup-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="tgroup-body">${other.map(t => renderTariffCard(t, {})).join('')}</div>
+    </div>`;
+  }
+  el.innerHTML = html || '<div style="text-align:center;padding:28px;color:var(--tx3)">Тарифы не найдены</div>';
+}
+
+/* Рендер одной карточки тарифа — премиальный вид */
+function renderTariffCard(t, group) {
+  const gb       = t.gb_limit === 0 ? '∞ ГБ' : t.gb_limit + ' ГБ';
+  const days     = t.days >= 365 ? '1 год' : t.days + ' дней';
+  const devices  = t.devices ? (t.devices >= 10 ? '∞ уст.' : t.devices + ' уст.') : '1 уст.';
+  const { main, sub } = fmtConverted(+t.price_usd);
+  const showOrig = S.currency !== 'USDT' && S.rates[S.currency] > 0;
+  // Бейдж "Популярный" для Семейного
+  const isPop    = group?.badge && /семей/i.test(t.name);
+
+  // Иконка категории внутри карточки
+  const icoColor = group?.key === 'game' ? '#30d158' : group?.key === 'family' ? '#ff9f0a' : group?.key === 'max' ? '#ff453a' : '#ff453a';
+  const icoBg    = group?.color || 'rgba(200,50,50,.1)';
+
+  return `<div class="tcard" id="t${t.id}" onclick="selTariff(${t.id},event)">
+    <div class="tcard-header">
+      <div class="tcard-ico" style="background:${icoBg}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${icoColor}" stroke-width="1.5" stroke-linecap="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div class="tcard-meta">
+        <div class="tcard-name">${t.name.replace(/^\S+\s/, '')}${isPop ? '<span class="tcard-badge">🔥 Топ</span>' : ''}</div>
+        <div class="tcard-days">${days} · ${devices}</div>
+      </div>
+      <div class="tcard-price">
+        <div class="tcard-usd">${main}</div>
+        <div class="tcard-cur">${sub}</div>
+        <div class="tcard-usd-orig" style="font-size:10px;color:var(--tx3);margin-top:1px">${showOrig ? '≈ $' + (+t.price_usd).toFixed(2) : ''}</div>
+      </div>
+    </div>
+    <div class="tcard-chips">
+      <div class="tcc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${days}</div>
+      <div class="tcc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12H2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0z"/></svg>${gb}</div>
+      <div class="tcc"><svg viewBox="0 0 24 24" fill="none" stroke="#8dff3d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span style="color:var(--grn)">VLESS Reality</span></div>
+    </div>
+  </div>`;
+}
+
+/* ════════ ВЫБОР ТАРИФА ══════════════════════════════════════════════ */
+function toggleGroup(key) {
+  $('tgrp-' + key)?.classList.toggle('open');
+}
+
+function selTariff(id, e) {
+  if (e) e.stopPropagation();
+  const t = S.tariffs.find(x => x.id === id); if (!t) return;
+  S.selId = id; S.selPrice = +t.price_usd; S.selPriceBase = +t.price_usd; S.selName = t.name;
+  S.promoCode = ''; S.promoDiscount = 0;
+  $('promo-input').value = '';
+  $('promo-status').className = 'promo-status';
+  document.querySelectorAll('.tcard').forEach(e => e.classList.remove('sel'));
+  $('t' + id)?.classList.add('sel');
+  const { main, sub } = fmtConverted(S.selPrice);
+  $('paylabel').textContent = `${main} ${sub}`;
+  $('paybar').style.display = 'block';
+  $('promobox').style.display = 'flex';
+}
+
+async function applyPromo() {
+  const code = ($('promo-input').value || '').trim().toUpperCase();
+  const statusEl = $('promo-status');
+  if (!code) { statusEl.className = 'promo-status'; return; }
+  if (!S.selId) { return; }
+
+  $('promo-apply-btn').disabled = true;
+  try {
+    const r = await fetch(BASE + '/api/check_promo', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: S.uid, tariff_id: S.selId, code }),
+    });
+    const d = await r.json();
+    if (!d.success) {
+      S.promoCode = ''; S.promoDiscount = 0;
+      S.selPrice = S.selPriceBase;
+      statusEl.className = 'promo-status err';
+      statusEl.textContent = '❌ ' + (d.error || 'Промокод недействителен');
+    } else {
+      S.promoCode = code; S.promoDiscount = d.discount_pct;
+      S.selPrice = d.new_price_usd;
+      statusEl.className = 'promo-status ok';
+      statusEl.textContent = `✅ Промокод применён: −${d.discount_pct}% (было $${S.selPriceBase.toFixed(2)}, стало $${S.selPrice.toFixed(2)})`;
+    }
+    const { main, sub } = fmtConverted(S.selPrice);
+    $('paylabel').textContent = `${main} ${sub}`;
+  } catch (e) {
+    statusEl.className = 'promo-status err';
+    statusEl.textContent = '❌ Не удалось проверить промокод, попробуйте позже';
+  } finally {
+    $('promo-apply-btn').disabled = false;
+  }
+}
+
+/* ════════ ИСТОРИЯ ПЛАТЕЖЕЙ ══════════════════════════════════════════ */
+function renderPayments(pays) {
+  const el = $('phlist');
+  if (!pays.length) { el.innerHTML = '<div style="color:var(--tx3)">История пуста</div>'; return; }
+  el.innerHTML = pays.map(p => {
+    const dt  = new Date(p.created_at * 1000).toLocaleDateString('ru-RU');
+    const cls = p.status === 'paid' ? 'paid' : 'pending';
+    const lbl = p.status === 'paid' ? '✅' : '⏳';
+    return `<div class="phitem">
+      <div style="display:flex;justify-content:space-between">
+        <div class="phname">${p.tariff_name || 'Тариф'}</div>
+        <div class="phamt ${cls}">$${(+p.amount).toFixed(2)}</div>
+      </div>
+      <div class="phmeta">${dt} ${lbl}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════ РЕФЕРАЛЬНАЯ СИСТЕМА — начисление бонусов ════════════════ */
+// Вызывается после обновления профиля, если refCount кратен 4
+function checkRefBonus(prevCount, newCount) {
+  const prevBonuses = Math.floor(prevCount / 4);
+  const newBonuses  = Math.floor(newCount  / 4);
+  if (newBonuses > prevBonuses) {
+    // Новый бонус!
+    toast('🎉 Получено +2 дня!');
+  }
+}
+
+/* ════════ МОДАЛКА ОПЛАТЫ ════════════════════════════════════════════ */
+let _payInterval = null, _curInvoice = null, _curPayUrl = null;
+function _openModal(id)  { $(id).style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+function _closeModal(id) { $(id).style.display = 'none';  document.body.style.overflow = ''; }
+function closePayModal()    { _closeModal('pay-modal'); if (_payInterval) { clearInterval(_payInterval); _payInterval = null; } _curInvoice = null; _curPayUrl = null; }
+function closeConfigModal() { _closeModal('cfg-modal'); }
+
+// Открываем ссылку на оплату, НЕ покидая Mini App (иначе Telegram закрывает WebApp).
+// Для Stars используем нативный Telegram.WebApp.openInvoice — счёт открывается
+// поверх текущего окна и сам сообщает статус оплаты.
+// Для CryptoBot используем openTelegramLink/openLink — тоже без выхода из приложения.
+function _openPayLink() {
+  if (!_curPayUrl) return;
+  if (S.currency === 'STARS' && tg?.openInvoice) {
+    tg.openInvoice(_curPayUrl, (status) => {
+      if (status === 'paid') {
+        _pollPayment(_curInvoice);
+      } else if (status === 'failed' || status === 'cancelled') {
+        toast(status === 'cancelled' ? '❌ Оплата отменена' : '❌ Оплата не прошла');
+      }
+    });
+    return;
+  }
+  if (_curPayUrl.startsWith('https://t.me/') && tg?.openTelegramLink) {
+    tg.openTelegramLink(_curPayUrl);
+  } else if (tg?.openLink) {
+    tg.openLink(_curPayUrl, { try_instant_view: false });
+  } else {
+    window.open(_curPayUrl, '_blank');
+  }
+}
+
+async function doBuy() {
+  if (!S.selId) { toast('❌ Выберите тариф'); return; }
+  if (!S.uid)   { toast('⚠️ Откройте через Telegram'); return; }
+  $('pay-btn-open').disabled    = true;
+  $('pay-btn-open').textContent = '⏳ Создаём счёт...';
+  try {
+    const r = await fetch(BASE + '/api/create_invoice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // Передаём валюту, включая STARS, и применённый промокод (если есть)
+      body: JSON.stringify({ user_id: S.uid, tariff_id: S.selId, currency: S.currency, promo: S.promoCode || undefined }),
+    });
+    const d = await r.json();
+    if (!d.success) throw new Error(d.error || 'server error');
+    _curInvoice = d.invoice_id;
+    $('pm-tariff').textContent  = S.selName;
+    // Показываем сумму в выбранной валюте (Stars или крипта)
+    $('pm-amount').textContent  = S.currency === 'STARS'
+      ? `⭐ ${Math.ceil((+d.amount || S.selPrice) / 0.019)} Stars`
+      : `${(+(d.amount || S.selPrice)).toFixed(d.currency === 'BTC' ? 6 : 2)} ${d.currency || S.currency}`;
+    $('pm-invid').textContent   = '#' + d.invoice_id;
+    _curPayUrl = d.pay_url;
+    const starSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.7 1.5 6.8L12 17.6l-6.1 3.4 1.5-6.8-5.2-4.7 6.9-.7z"/></svg>';
+    const cardSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>';
+    if (S.currency === 'STARS') {
+      $('pm-paylink').innerHTML = starSvg + ' Оплатить Stars';
+      $('pm-paylink').style.background = 'var(--gold2)';
+      $('pm-paylink').style.boxShadow   = '0 2px 12px rgba(255,159,10,.22)';
+    } else {
+      $('pm-paylink').innerHTML = cardSvg + ' Оплатить в CryptoBot';
+      $('pm-paylink').style.background = 'var(--red2)';
+      $('pm-paylink').style.boxShadow   = '0 2px 12px rgba(255,69,58,.22)';
+    }
+    $('pm-status').textContent  = '⏳ Ожидаем оплату...';
+    $('pm-status').className    = 'pm-status pending';
+    _openModal('pay-modal');
+    if (_payInterval) clearInterval(_payInterval);
+    _payInterval = setInterval(() => _pollPayment(d.invoice_id), 4000);
+  } catch(e) { toast('❌ ' + (e.message || 'Ошибка создания счёта')); }
+  finally {
+    $('pay-btn-open').disabled  = false;
+    const { main, sub } = fmtConverted(S.selPrice);
+    $('pay-btn-open').innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Оплатить <span id="paylabel">${main} ${sub}</span>`;
+  }
+}
+
+async function _pollPayment(invoice_id) {
+  try {
+    const r = await fetch(BASE + '/api/check_payment', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ invoice_id, user_id: S.uid }),
+    });
+    const d = await r.json();
+    if (d.paid) {
+      clearInterval(_payInterval); _payInterval = null;
+      $('pm-status').textContent = '✅ Оплачено! Подписка активирована';
+      $('pm-status').className   = 'pm-status paid';
+      $('pm-paylink').style.display = 'none';
+      setTimeout(() => { closePayModal(); loadProfile(); toast('🎉 Подписка активирована!'); }, 2000);
+    }
+  } catch(e) {}
+}
+
+/* ════════ ДЕЙСТВИЯ ══════════════════════════════════════════════════ */
+async function doAction(action) {
+  if (action === 'get_config') {
+    if (!S.subActive) { toast('❌ Нет активной подписки'); switchTab('vpn'); return; }
+    if (!S.uid) { toast('⚠️ Откройте через Telegram'); return; }
+    $('cfg-link').textContent = '⏳ Загружаем конфиг...';
+    $('cfg-qr').innerHTML = '';
+    _openModal('cfg-modal');
+    try {
+      const r = await fetch(`${BASE}/api/get_config?user_id=${S.uid}`);
+      const d = await r.json();
+      if (!d.success) throw new Error(d.message || 'ошибка');
+      $('cfg-link').textContent = d.vless;
+      $('cfg-days').textContent = `Активна ещё ${d.days_left} дн.`;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(d.vless)}`;
+      $('cfg-qr').innerHTML = `<img src="${qrUrl}" style="border-radius:10px;width:180px;height:180px" alt="QR"/>`;
+    } catch(e) {
+      $('cfg-link').textContent = '❌ ' + (e.message || 'Конфиг недоступен');
+      $('cfg-qr').innerHTML = '';
+    }
+    return;
+  }
+  if (action === 'get_stats') {
+    if (tg?.sendData) tg.sendData(JSON.stringify({ action }));
+    toast('📊 Статистика отправлена в чат');
+  }
+}
+
+/* ════════ УТИЛИТЫ ════════════════════════════════════════════════════ */
+function copyConfig() {
+  const t = $('cfg-link').textContent;
+  if (!t || t.startsWith('⏳') || t.startsWith('❌')) return;
+  clip(t); toast('📋 Конфиг скопирован!');
+}
+
+function send(p) { if (tg?.sendData) tg.sendData(JSON.stringify(p)); else toast('⚠️ Откройте через Telegram'); }
+function shareRef() { if (!S.refLink) return; if (tg?.shareUrl) tg.shareUrl(S.refLink, '🚀 Попробуй VpnDota!'); else copyRef(); }
+function copyRef()  { clip(S.refLink); toast('🔗 Ссылка скопирована!'); }
+function toggleWd() { const f = $('wdform'); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
+function togglePromoWeb() { const f = $('promoform-web'); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
+
+/* Активация промокода на бонусные дни прямо в профиле */
+async function redeemPromoWeb() {
+  const code = ($('promo-web-input').value || '').trim().toUpperCase();
+  if (!code) { toast('❌ Введите код'); return; }
+  try {
+    const r = await fetch(BASE + '/api/redeem_promo', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: S.uid, code }),
+    });
+    const d = await r.json();
+    if (!d.success) { toast('❌ ' + (d.error || 'Не удалось активировать')); return; }
+    toast(`🎉 Начислено ${d.days} дн.!`);
+    $('promo-web-input').value = '';
+    $('promoform-web').style.display = 'none';
+    loadProfile();
+  } catch (e) {
+    toast('❌ Ошибка сети, попробуйте позже');
+  }
+}
+
+/* Вывод средств — проверки + отправка заявки */
+function doWithdraw() {
+  const amt = parseFloat($('wdamt').value);
+  const wlt = $('wdwlt').value.trim();
+  if (!amt || amt < 5)       { toast('❌ Минимум $5.00'); return; }
+  if (amt > S.balance)       { toast('❌ Недостаточно средств'); return; }
+  if (!wlt)                  { toast('❌ Укажите кошелёк'); return; }
+  // Вычитаем из баланса локально
+  S.balance -= amt;
+  $('balval').textContent = '$' + S.balance.toFixed(2);
+  $('d-bal').textContent  = '$' + S.balance.toFixed(2);
+  // Отправляем заявку в Telegram
+  send({ action: 'referral_withdraw', amount: amt, wallet: wlt });
+  toast('✅ Заявка отправлена! Ожидайте обработки');
+  // Скрываем форму
+  $('wdform').style.display = 'none';
+  $('wdamt').value = '';
+  $('wdwlt').value = '';
+}
+
+function $(id)       { return document.getElementById(id); }
+function fmtDate(ms) { return new Date(ms).toLocaleDateString('ru-RU', { day:'numeric', month:'long', year:'numeric' }); }
+function clip(txt)   { if (!txt) return; if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => _clip2(txt)); else _clip2(txt); }
+function _clip2(txt) { const t = document.createElement('textarea'); t.value = txt; t.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+let _tt;
+function toast(msg) { const el = $('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(_tt); _tt = setTimeout(() => el.classList.remove('show'), 2400); }
+
+/* ════════ BOOT ══════════════════════════════════════════════════════ */
+async function boot() {
+  // Инициализация курсов с дефолтами
+  S.rates = { USDT: 1, TON: 0, BTC: 0, RUB: 95, STARS: 1/0.019 };
+
+  if (S.uid) {
+    setAv($('av-sm'), S.photo, S.fname);
+    setAv($('av-lg'), S.photo, S.fname);
+    $('uname-sm').textContent = S.fname;
+    $('profname').textContent = S.fullname;
+    const h = S.uname ? '@' + S.uname : S.fname;
+    $('profhnd').textContent = h;
+    $('d-tg').textContent    = h;
+    $('d-id').textContent    = String(S.uid);
+    $('supcode').textContent = String(S.uid);
+  }
+  $('ltxt').textContent = 'Загружаем данные...';
+  await Promise.all([loadProfile(), loadTariffs(), fetchRates()]);
+  setTimeout(() => {
+    $('loading').classList.add('hide');
+    setTimeout(() => { $('loading').style.display = 'none'; }, 350);
+  }, 300);
+}
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>

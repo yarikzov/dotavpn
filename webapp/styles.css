@@ -1,0 +1,43 @@
+/* Дополнительные стили для WebApp */
+:root {
+    --tg-theme-bg-color: #06060b;
+    --tg-theme-text-color: #f3f3fb;
+    --tg-theme-hint-color: #9a9ab4;
+    --tg-theme-link-color: #ff2350;
+    --tg-theme-button-color: #ff2350;
+    --tg-theme-button-text-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --tg-theme-bg-color: #06060b;
+        --tg-theme-text-color: #f3f3fb;
+    }
+}
+
+/* Telegram WebApp viewport fix */
+body {
+    background: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
+}
+
+/* Анимации для лучшего UX */
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* Скелетон для загрузки */
+.skeleton {
+    background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
